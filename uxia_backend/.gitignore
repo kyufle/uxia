@@ -1,0 +1,57 @@
+# ----------------------
+# DJANGO / PYTHON
+# ----------------------
+*.py[cod]
+__pycache__/
+*.sqlite3
+db.sqlite3
+
+# Entornos virtuales
+/env/
+venv/
+.venv/
+
+# Variables de entorno
+.env
+.env.*
+
+# Archivos de Django
+/static/
+/media/
+
+# Migraciones (opcional, depende del flujo de trabajo)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Coverage / testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs
+*.log
+
+# ----------------------
+# REACT / FRONTEND
+# ----------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+/build/
+/dist/
+
+# Cache
+.cache/
+.next/
+.parcel-cache/
+
+# ----------------------
+# IDE / SISTEMA
+# ----------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

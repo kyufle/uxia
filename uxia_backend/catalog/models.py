@@ -55,6 +55,8 @@ class Tried(models.Model):
     isIdentificate = models.BooleanField(default=False)
 
     # necesario el fk para relacionar el intento con el item que se intentó identificar!!!
+    #osea el item que el usuario intentó identificar con la imagen del intento, no es el resultado de la IA, 
+    # sino el item que se supone que es el correcto para esa imagen
     item = models.ForeignKey(
         Item,
         on_delete=models.CASCADE,

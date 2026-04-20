@@ -23,7 +23,7 @@ function App() {
           <SelectExpo seleccionado={seleccionado} setSeleccionado={setSeleccionado} />
         </div>
         <div className="my-8 p-3 w-full max-w-xs md:max-w-md xl:max-w-full xl:px-10">
-          {seleccionado && seleccionado != "" ? <Carrousel photos={mockImagenes}/> : <p>No has seleccionat cap exposició</p>}
+          {seleccionado && seleccionado != "" ? <Carrousel photos={mockImagenes}/> : <p className='sm:text-center'> No has seleccionat cap exposició</p>}
         </div>
       </main>
 

@@ -4,7 +4,7 @@ import './App.css'
 import Carrousel from './components/Carrousel'
 import SelectExpo from './components/SelectExpo';
 import Header from './components/Header';
-;
+import { marcasDeCoches } from './constants';
 
 function App() {
   const [seleccionado, setSeleccionado] = useState("");
@@ -13,6 +13,7 @@ function App() {
     "https://picsum.photos/id/1060/400",
     "https://picsum.photos/id/1080/400",
   ]
+  const esMarcaValida = marcasDeCoches.includes(seleccionado);
 
   return (
     <div className='flex flex-col min-h-screen w-full'>
@@ -23,7 +24,7 @@ function App() {
           <SelectExpo seleccionado={seleccionado} setSeleccionado={setSeleccionado} />
         </div>
         <div className="my-8 p-3 w-full max-w-xs md:max-w-md xl:max-w-full xl:px-10">
-          {seleccionado && seleccionado != "" ? <Carrousel photos={mockImagenes}/> : <p className='sm:text-center'> No has seleccionat cap exposició</p>}
+          {esMarcaValida ? <Carrousel photos={mockImagenes}/> : <p className='sm:text-center'> No has seleccionat cap exposició</p>}
         </div>
       </main>
 

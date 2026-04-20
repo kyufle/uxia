@@ -28,6 +28,12 @@ class Item(models.Model):
     description = models.CharField(max_length=200)
     expo = models.ForeignKey(Expo, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
+     #  IMAGEN DESTACADA
+    featured_image = models.ImageField(
+        upload_to='featured/',   
+        null=True,               
+        blank=True               
+    )
 
     def __str__(self):
         return f"{self.name} (pertany a l'expo {self.expo.name})"
@@ -47,10 +53,24 @@ class Tried(models.Model):
     image = models.ImageField(upload_to='intents/')  # ✅ ahora es imagen propia
     dateAttempt = models.DateField()
     isIdentificate = models.BooleanField(default=False)
-    identifiedItem = models.ForeignKey(  # ✅ resultado de la IA
-        Item, on_delete=models.SET_NULL, 
-        null=True, blank=True
+
+    # necesario el fk para relacionar el intento con el item que se intentó identificar!!!
+    item = models.ForeignKey(
+        Item,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="tried_items"
     )
+    #resultado de la IA
+    identifiedItem = models.ForeignKey(
+        Item,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="identified_items"
+    )
+     
 
     def __str__(self):
         state = "Identificat" if self.isIdentificate else "No identificat"

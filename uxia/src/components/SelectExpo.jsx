@@ -29,7 +29,7 @@ const SelectExpo = () => {
         <input
             className="w-full border-1 border-solid p-2 border-gray-200 rounded-sm"
             type="text"
-            placeholder="Busca o selecciona una opción..."
+            placeholder="Cerca o selecciona una opció..."
             onChange={(e) => setInputValue(e.target.value)}
             value={inputValue ?? ""}
         />
@@ -52,7 +52,7 @@ const SelectExpo = () => {
             >{coche}
             </p>;
             })}
-            {!listadoCoches.length && <p>No hay opciones</p>}
+            {!listadoCoches.length && <p className={`cursor-pointer px-4 py-2 text-left transition-colors`}>No hi ha opcions</p>}
         </div>
     </div>
 }

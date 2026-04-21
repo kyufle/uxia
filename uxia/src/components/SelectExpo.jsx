@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+// libreria d iconos d tailwind.
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"; 
 
 // const filterMarcas = (query) => expo.filter((coche) => coche.toLowerCase().includes(query.toLowerCase()));
 
@@ -64,8 +65,13 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
                     setOpen(false);
                 }
             }}>
+                
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+            </div>
+
             <input
-                className="w-full border-1 border-solid p-2 border-gray-200 rounded-sm"
+                className="w-full border-1 border-solid p-2 pl-10 border-gray-200 rounded-sm"
                 type="text"
                 placeholder="Cerca o selecciona una opció..."
                 onChange={(e) => setSeleccionado(e.target.value)}

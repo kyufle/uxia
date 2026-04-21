@@ -4,6 +4,7 @@ import os
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from .models import Item, Expo, Image
 
 @api_view(['GET'])
 def get_coches(request):

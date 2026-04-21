@@ -15,7 +15,7 @@ class Command(BaseCommand):
         
         # Ruta base desde uxia_backend
         base_dir = Path(settings.BASE_DIR)
-        source_dir = os.path.join(base_dir, 'coches', 'Internet_coches')
+        source_dir = os.path.join(base_dir,  'Internet_coches')
         
         # Verificación de la carpeta
         if not os.path.exists(source_dir):

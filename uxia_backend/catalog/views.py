@@ -1,9 +1,9 @@
-from django.shortcuts import render
-
-# Create your views here.
+import tempfile
+import ollama
+import os
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Item
+from rest_framework import status
 
 @api_view(['GET'])
 def get_coches(request):
@@ -42,3 +42,35 @@ def devolver_json_coches(items):
             "expo": item.expo.name
         })
     return Response(data)
+
+@api_view(['POST'])
+def foto_maria(request):
+    if 'image' not in request.FILES:
+        return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
+    image_file = request.FILES['image']
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp:
+            for chunk in image_file.chunks():
+                temp.write(chunk)
+            temp_path = temp.name
+        client = ollama.Client(host='http://192.168.1.24:11434')
+        response = client.chat(
+            model='qwen3-vl:30b',
+            messages=[{
+                'role': 'user',
+                'content': 'Descriu aquesta imatge en menys de cinc lineas y sense negrita ni formats especials tan sols text.',
+                'images': [temp_path]
+            }]
+        )
+        res_ia = response['message']['content']
+        return Response({
+            "descripcio": res_ia,
+            "usuari": request.user.username if request.user.is_authenticated else "convidat"
+        }, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        print(f"ERROR CRÍTIC: {e}")
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)

@@ -31,11 +31,14 @@ def get_coches_expo(request):
 def devolver_json_coches(items):
     data = []
     for item in items:
+        carrusel = [img.path.url for img in item.image_set.all()]
+
         data.append({
             "id": item.id,
             "name": item.name,
             "description": item.description,
             "image": item.featured_image.url if item.featured_image else None,
+            "images": carrusel,
             "expo": item.expo.name
         })
     return Response(data)

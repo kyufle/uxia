@@ -8,13 +8,7 @@ import { CameraMaria } from './components/CameraMaria';
 
 function App() {
   const [seleccionado, setSeleccionado] = useState("");
-  const [showCamera, setShowCamera] = useState(false); // <--- Variable movida aquí
-
-  const mockImagenes = [
-    "https://picsum.photos/id/1020/400",
-    "https://picsum.photos/id/1060/400",
-    "https://picsum.photos/id/1080/400",
-  ]
+  const [showCamera, setShowCamera] = useState(false);
 
   return (
     <div className='flex flex-col min-h-screen w-full'>
@@ -39,8 +33,8 @@ function App() {
         <div className='w-full max-w-xs md:max-w-md xl:w-200'>
             <CameraMaria showCamera={showCamera} setShowCamera={setShowCamera} />
         </div>
-      </main>
       <Footer/>
+       </main>
     </div>
   )
 }

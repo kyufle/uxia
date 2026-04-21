@@ -16,7 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings  
+from django.conf.urls.static import static
+from django.urls import path, include
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('catalog.urls')),
 ]
+
+# ESTO ES CLAVE PARA Q SE VEAN LAS FOTOS EN EL ADMIN, SI NO LO PONES TE SALDRÁ ERROR 404 CUANDO INTENTES VERLAS
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -6,7 +6,7 @@ function Carrousel({ seleccionado }) {
     const [indexPhoto, setIndexPhoto] = useState(0);
     const [cars, setCars] = useState([]);
     const [showInfo, setShowInfo] = useState(false);
-    const [tempImage, setTempImage] = useState(null); // Estado para la imagen ampliada en el menú
+    const [tempImage, setTempImage] = useState(null);
     const touchStartY = useRef(null);
 
     useEffect(() => {
@@ -26,8 +26,6 @@ function Carrousel({ seleccionado }) {
 
     const currentCar = cars[indexPhoto];
     const totalCars = cars.length;
-
-    // Al abrir el menú, reseteamos la imagen temporal a la principal del coche
     const handleInfo = () => {
         setTempImage(currentCar.image);
         setShowInfo(true);
@@ -50,8 +48,6 @@ function Carrousel({ seleccionado }) {
                 className={`fixed inset-0 bg-black/60 transition-opacity duration-300 ${showInfo ? 'opacity-100 z-40' : 'opacity-0 pointer-events-none z-0'}`}
                 onClick={closeMenu}
             />
-
-            {/* Panel Desplegable */}
             <div
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
@@ -61,7 +57,6 @@ function Carrousel({ seleccionado }) {
                 <div className="p-6 flex flex-col items-center">
                     {currentCar && (
                         <>
-                            {/* --- FOTO GRANDE DEL MENÚ (Cambia dinámicamente) --- */}
                             <div className="w-full max-w-sm mb-4">
                                 <img 
                                     src={`http://127.0.0.1:8000${tempImage || currentCar.image}`} 
@@ -74,13 +69,10 @@ function Carrousel({ seleccionado }) {
                                 <h3 className="text-xl font-bold uppercase">{currentCar.name}</h3>
                                 <p className="text-gray-600 text-xs">{currentCar.description || "Sin descripción."}</p>
                             </div>
-
-                            {/* Galería con OnClick */}
                             {currentCar.images && currentCar.images.length > 0 && (
                                 <div className="w-full max-w-sm mt-2 px-2">
                                     <h4 className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Toca para ampliar</h4>
-                                    <div className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar"> 
-                                        {/* Incluimos también la principal en la galería por si quieren volver a ella */}
+                                    <div className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
                                         <img 
                                             src={`http://127.0.0.1:8000${currentCar.image}`}
                                             onClick={() => setTempImage(currentCar.image)}
@@ -92,7 +84,7 @@ function Carrousel({ seleccionado }) {
                                                 key={idx}
                                                 src={`http://127.0.0.1:8000${imgUrl}`}
                                                 alt={`Vista ${idx}`}
-                                                onClick={() => setTempImage(imgUrl)} // <--- AQUÍ CAMBIA LA FOTO
+                                                onClick={() => setTempImage(imgUrl)}
                                                 className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all cursor-pointer ${tempImage === imgUrl ? 'border-blue-500 scale-110' : 'border-transparent'}`} 
                                             />
                                         ))}
@@ -104,8 +96,6 @@ function Carrousel({ seleccionado }) {
                     <div className="mt-2 w-10 h-1 bg-gray-200 rounded-full cursor-pointer" onClick={closeMenu}></div>
                 </div>
             </div>
-
-            {/* Resto del Carrusel Principal (Igual) */}
             <button
                 onClick={() => setIndexPhoto(indexPhoto === 0 ? totalCars - 1 : indexPhoto - 1)}
                 className="absolute left-2 p-4 bg-white/10 backdrop-blur-md rounded-full z-30"

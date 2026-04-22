@@ -26,7 +26,5 @@ urlpatterns = [
     path('api/', include('catalog.urls')),
 ]
 
-# ESTO ES CLAVE PARA Q SE VEAN LAS FOTOS EN EL ADMIN, SI NO LO PONES TE SALDRÁ ERROR 404 CUANDO INTENTES VERLAS
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

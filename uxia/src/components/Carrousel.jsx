@@ -96,6 +96,9 @@ function Carrousel({ seleccionado }) {
                     <div className="mt-2 w-10 h-1 bg-gray-200 rounded-full cursor-pointer" onClick={closeMenu}></div>
                 </div>
             </div>
+            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium z-30">
+                Cotxe {indexPhoto + 1} de {totalCars}
+            </div>
             <button
                 onClick={() => setIndexPhoto(indexPhoto === 0 ? totalCars - 1 : indexPhoto - 1)}
                 className="absolute left-2 p-4 bg-white/10 backdrop-blur-md rounded-full z-30"

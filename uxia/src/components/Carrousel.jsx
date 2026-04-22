@@ -12,7 +12,7 @@ function Carrousel({ seleccionado }) {
     useEffect(() => {
         async function chargeCarsExpo() {
             try {
-                const response = await fetch(`https://uxiaweb2.ieti.site/api/coches_expo/?expo=${seleccionado}`);
+                const response = await fetch(`//coches_expo/?expo=${seleccionado}`);
                 if (!response.ok) throw new Error(`Status: ${response.status}`);
                 const data = await response.json();
                 setCars(data);

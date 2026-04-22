@@ -75,7 +75,7 @@ export function CameraMaria({ showCamera, setShowCamera }) {
 
   return (
     /* Reducimos el margen y padding en móvil (my-4 p-5) y lo subimos en desktop (sm:my-10 sm:p-8) */
-    <section className="max-w-xl mx-4 sm:mx-auto my-4 sm:my-10 p-5 sm:p-8 bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-300">
+    <section className="w-full max-w-3xl mx-auto px-4 my-4 sm:my-10 p-5 sm:p-8 bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-300">
       
       <div className="flex justify-between items-start mb-6 sm:mb-8">
         <div className="text-left">

@@ -58,7 +58,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
     
     return (
         <div
-            className="relative w-full"
+            className="relative w-full mt-2"
             onFocus={() => setOpen(true)}
             onBlur={(e) => {
                 if (!e.currentTarget.contains(e.relatedTarget)) {

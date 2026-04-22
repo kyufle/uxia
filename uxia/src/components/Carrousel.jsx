@@ -59,7 +59,7 @@ function Carrousel({ seleccionado }) {
                         <>
                             <div className="w-full max-w-sm mb-4">
                                 <img 
-                                    src={`https://uxiaweb2.ieti.site${tempImage || currentCar.image}`} 
+                                    src={`${tempImage || currentCar.image}`} 
                                     alt={currentCar.name} 
                                     className="w-full h-56 object-cover rounded-2xl shadow-md transition-all duration-300"
                                 />
@@ -74,7 +74,7 @@ function Carrousel({ seleccionado }) {
                                     <h4 className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Toca para ampliar</h4>
                                     <div className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
                                         <img 
-                                            src={`https://uxiaweb2.ieti.site${currentCar.image}`}
+                                            src={`${currentCar.image}`}
                                             onClick={() => setTempImage(currentCar.image)}
                                             className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all ${tempImage === currentCar.image ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                         />
@@ -82,7 +82,7 @@ function Carrousel({ seleccionado }) {
                                         {currentCar.images.map((imgUrl, idx) => (
                                             <img 
                                                 key={idx}
-                                                src={`https://uxiaweb2.ieti.site${imgUrl}`}
+                                                src={`${imgUrl}`}
                                                 alt={`Vista ${idx}`}
                                                 onClick={() => setTempImage(imgUrl)}
                                                 className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all cursor-pointer ${tempImage === imgUrl ? 'border-blue-500 scale-110' : 'border-transparent'}`} 
@@ -111,7 +111,7 @@ function Carrousel({ seleccionado }) {
                     indexPhoto === index && (
                         <img
                             key={photo.id || index}
-                            src={`https://uxiaweb2.ieti.site${photo.image}`}
+                            src={`${photo.image}`}
                             alt={photo.name}
                             className="w-full h-auto object-cover rounded-xl cursor-pointer"
                             onClick={handleInfo}

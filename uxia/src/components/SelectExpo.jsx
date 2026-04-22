@@ -11,7 +11,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
     useEffect(()=>{
         async function chargeExpos(){
             try{
-                const response = await fetch("http://127.0.0.1:8000/api/coches/");
+                const response = await fetch("http://uxiaweb2.ieti.site/api/coches/");
                 if(!response.ok){
                      throw new Error(`Response status: ${response.status}`);
                 }
@@ -33,7 +33,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
         async function lookforExpo() {
             if (seleccionado.length >= 3) {
                 try {
-                    const response = await fetch(`http://127.0.0.1:8000/api/expo/?expo=${seleccionado}`);
+                    const response = await fetch(`http://uxiaweb2.ieti.site/api/expo/?expo=${seleccionado}`);
                     const data = await response.json();
                     const uniqueNames = [...new Set(data.map(item => item.expo))];
                     setExpoSelected(uniqueNames);

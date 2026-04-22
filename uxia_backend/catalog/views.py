@@ -55,7 +55,7 @@ def foto_maria(request):
             for chunk in image_file.chunks():
                 temp.write(chunk)
             temp_path = temp.name
-        client = ollama.Client(host='http://192.168.1.24:11434')
+        client = ollama.Client(host='https://192.168.1.24:11434')
         response = client.chat(
             model='qwen3-vl:30b',
             messages=[{

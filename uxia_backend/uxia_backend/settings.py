@@ -33,8 +33,8 @@ DATABASES = {
     'default': env.db(),
 }
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS",default=[
-    "http://localhost:5173",    # Exemple: React en desenvolupament amb Vite o CRA
-    "http://127.0.0.1:5173",
+    "https://localhost:5173",    # Exemple: React en desenvolupament amb Vite o CRA
+    "https://127.0.0.1:5173",
 ])
 
 

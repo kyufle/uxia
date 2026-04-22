@@ -1,4 +1,3 @@
-import { CameraIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react';
 
 export function CameraMaria({ showCamera, setShowCamera }) {
@@ -35,43 +34,20 @@ export function CameraMaria({ showCamera, setShowCamera }) {
     }
   };
 
- if (!showCamera) {
-  return (
-    <div className="flex justify-center my-8 px-4 font-sans antialiased">
-      <div className="p-[1px] rounded-full bg-gradient-to-r from-blue-100/50 via-slate-200 to-orange-100/50 shadow-sm w-full sm:w-auto">
+  if (!showCamera) {
+    return (
+      <div className="flex justify-center my-6 px-4">
+        {/* En móvil el botón ocupa casi todo el ancho (w-full) y en desktop vuelve a su ancho normal */}
         <button 
           onClick={() => setShowCamera(true)}
-          className="
-            cursor-pointer 
-            flex items-center justify-center 
-            space-x-3 
-            w-full sm:w-auto 
-            px-8 py-3.5 
-            bg-slate-50 
-            text-slate-800 
-            rounded-full 
-            font-semibold 
-            tracking-wide
-            transition-all duration-300 ease-out
-            hover:bg-blue-50/50 
-            hover:shadow-md 
-            hover:-translate-y-0.5
-            active:scale-95 active:translate-y-0
-          "
+          className="cursor-pointer flex items-center justify-center space-x-3 w-full sm:w-auto px-6 py-4 sm:px-8 bg-indigo-600 text-white rounded-full font-bold shadow-lg hover:bg-indigo-700 transition-all transform hover:scale-105 active:scale-95"
         >
-          <CameraIcon className="w-6 h-6 text-blue-400 stroke-[1.5]" />
-          <span className="text-base">
-            Obrir <span className="font-bold text-slate-950">marIA 2.0</span>
-          </span>
-          <span className="relative flex h-2 w-2 ml-1">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-300 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-400/80"></span>
-          </span>
+          <span className="text-xl sm:text-2xl">📸</span>
+          <span className="text-sm sm:text-base">Obrir marIA 2.0</span>
         </button>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     /* Reducimos el margen y padding en móvil (my-4 p-5) y lo subimos en desktop (sm:my-10 sm:p-8) */

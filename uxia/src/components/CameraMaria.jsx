@@ -18,7 +18,7 @@ export function CameraMaria({ showCamera, setShowCamera }) {
     formData.append('image', file);
 
     try {
-      const response = await fetch('//foto/', {
+      const response = await fetch('https://uxiaweb2.ieti.site/api/foto/', {
         method: 'POST',
         body: formData,
       });

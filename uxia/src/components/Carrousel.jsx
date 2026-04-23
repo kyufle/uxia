@@ -8,6 +8,7 @@ function Carrousel({ seleccionado }) {
     const [showInfo, setShowInfo] = useState(false);
     const [tempImage, setTempImage] = useState(null);
     const touchStartY = useRef(null);
+    const scrollRef = useRef(null);
 
     useEffect(() => {
         async function chargeCarsExpo() {
@@ -23,6 +24,11 @@ function Carrousel({ seleccionado }) {
         }
         chargeCarsExpo();
     }, [seleccionado]);
+
+    useEffect(() => {
+        setTempImage(null);
+        if (scrollRef.current) scrollRef.current.scrollLeft = 0;
+    }, [indexPhoto]);
 
     const currentCar = cars[indexPhoto];
     const totalCars = cars.length;
@@ -40,7 +46,7 @@ function Carrousel({ seleccionado }) {
         if (diff > 50) { closeMenu(); touchStartY.current = null; }
     };
 
-    if (totalCars === 0) return <div className="p-10 text-center text-gray-400 italic">Cargando coches...</div>;
+    if (totalCars === 0) return <div className="p-10 text-center text-gray-400 italic">Carregant cotxes...</div>;
 
     return (
         <div className='w-full h-full flex flex-row justify-center items-center relative overflow-hidden'>
@@ -58,34 +64,34 @@ function Carrousel({ seleccionado }) {
                     {currentCar && (
                         <>
                             <div className="w-full max-w-sm mb-4">
-                                <img 
-                                    src={`https://uxiaweb2.ieti.site${tempImage || currentCar.image}`} 
-                                    alt={currentCar.name} 
+                                <img
+                                    src={`https://uxiaweb2.ieti.site${tempImage || currentCar.image}`}
+                                    alt={currentCar.name.replaceAll('-', ' ')}
                                     className="w-full h-56 object-cover rounded-2xl shadow-md transition-all duration-300"
                                 />
                             </div>
 
                             <div className="text-center w-full max-w-md text-blue-950 gap-1 flex flex-col mb-4">
-                                <h3 className="text-xl font-bold uppercase">{currentCar.name}</h3>
-                                <p className="text-gray-600 text-xs">{currentCar.description || "Sin descripción."}</p>
+                                <h3 className="text-xl font-bold uppercase">{currentCar.name.replaceAll('-', ' ')}</h3>
+                                <p className="text-gray-600 text-xs">{currentCar.description.replaceAll('-', ' ') || "Sense descripció."}</p>
                             </div>
                             {currentCar.images && currentCar.images.length > 0 && (
                                 <div className="w-full max-w-sm mt-2 px-2">
                                     <h4 className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Toca para ampliar</h4>
-                                    <div className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
-                                        <img 
+                                    <div ref={scrollRef} className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
+                                        <img
                                             src={`https://uxiaweb2.ieti.site${currentCar.image}`}
                                             onClick={() => setTempImage(currentCar.image)}
-                                            className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all ${tempImage === currentCar.image ? 'border-blue-500 scale-110' : 'border-transparent'}`}
+                                            className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all ${(!tempImage || tempImage === currentCar.image) ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                         />
-                                        
-                                        {currentCar.images.map((imgUrl, idx) => (
-                                            <img 
+
+                                        {currentCar.images.filter(img => img !== currentCar.image).map((imgUrl, idx) => (
+                                            <img
                                                 key={idx}
                                                 src={`https://uxiaweb2.ieti.site${imgUrl}`}
                                                 alt={`Vista ${idx}`}
                                                 onClick={() => setTempImage(imgUrl)}
-                                                className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all cursor-pointer ${tempImage === imgUrl ? 'border-blue-500 scale-110' : 'border-transparent'}`} 
+                                                className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all cursor-pointer ${tempImage === imgUrl ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                             />
                                         ))}
                                     </div>
@@ -96,12 +102,14 @@ function Carrousel({ seleccionado }) {
                     <div className="mt-2 w-10 h-1 bg-gray-200 rounded-full cursor-pointer" onClick={closeMenu}></div>
                 </div>
             </div>
-            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium z-30">
+
+            <div className="absolute top-12 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium z-30">
                 Cotxe {indexPhoto + 1} de {totalCars}
             </div>
+
             <button
                 onClick={() => setIndexPhoto(indexPhoto === 0 ? totalCars - 1 : indexPhoto - 1)}
-                className="absolute left-2 p-4 bg-white/10 backdrop-blur-md rounded-full z-30"
+                className="absolute left-0 p-4 bg-white/10 backdrop-blur-md rounded-full z-30"
             >
                 <img src={izquierda} alt="Prev" className="w-5 h-5 brightness-0 invert" />
             </button>
@@ -109,19 +117,22 @@ function Carrousel({ seleccionado }) {
             <div className="flex justify-center items-center w-full h-full">
                 {cars.map((photo, index) => (
                     indexPhoto === index && (
-                        <img
-                            key={photo.id || index}
-                            src={`https://uxiaweb2.ieti.site${photo.image}`}
-                            alt={photo.name}
-                            className="w-full h-auto object-cover rounded-xl cursor-pointer"
-                            onClick={handleInfo}
-                        />
+                        <div key={photo.id || index} className="flex flex-col w-full">
+                            <h3 className="text-xl font-bold uppercase text-[#162354] mb-2">{photo.name.replaceAll('-', ' ')}</h3>
+                            <img
+                                src={`https://uxiaweb2.ieti.site${photo.image}`}
+                                alt={photo.name.replaceAll('-', ' ')}
+                                className="w-full h-[250px] object-cover rounded-xl cursor-pointer"
+                                onClick={handleInfo}
+                            />
+                        </div>
                     )
                 ))}
             </div>
+
             <button
                 onClick={() => setIndexPhoto(indexPhoto === totalCars - 1 ? 0 : indexPhoto + 1)}
-                className="absolute right-2 p-4 bg-white/10 backdrop-blur-md rounded-full z-30"
+                className="absolute right-0 p-4 bg-white/10 backdrop-blur-md rounded-full z-30"
             >
                 <img src={derecha} alt="Next" className="w-5 h-5 brightness-0 invert" />
             </button>

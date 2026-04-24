@@ -60,7 +60,7 @@ def foto_maria(request):
             model='qwen3-vl:30b',
             messages=[{
                 'role': 'user',
-                'content': 'Descriu aquesta imatge en menys de cinc lineas y sense negrita ni formats especials tan sols text.',
+                'content': 'Descriu aquesta imatge en menys de cinc lineas, en catalá y sense negrita ni formats especials tan sols text.',
                 'images': [temp_path]
             }]
         )

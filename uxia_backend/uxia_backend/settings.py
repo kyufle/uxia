@@ -33,8 +33,8 @@ DATABASES = {
     'default': env.db(),
 }
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS",default=[
-    "http://localhost:5173",    # Exemple: React en desenvolupament amb Vite o CRA
-    "http://127.0.0.1:5173",
+    "https://localhost:5173",    # Exemple: React en desenvolupament amb Vite o CRA
+    "https://127.0.0.1:5173",
 ])
 
 
@@ -125,5 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS").split(",")

@@ -13,15 +13,18 @@ function App() {
   return (
     <div className='flex flex-col min-h-screen w-full'>
       <Header />
-
       <main className='flex-grow flex flex-col items-center w-full bg-gray-50 pb-32'>
+      
         {!showCamera && (
           <>
             <div className="w-full max-w-3xl xl:max-w-4xl mx-auto px-8 md:px-4">
               <SelectExpo seleccionado={seleccionado} setSeleccionado={setSeleccionado} />
             </div>
+
             <div className="my-8 w-full max-w-3xl xl:max-w-4xl mx-auto px-8 md:px-4">
               {!seleccionado ? <p className='sm:text-center'> No has seleccionat cap exposició</p> : <Carrousel seleccionado={seleccionado} />}
+
+            
             </div>
           </>
         )}

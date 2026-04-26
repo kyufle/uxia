@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import izquierda from '../assets/chevron-izquierdo.png'
 import derecha from '../assets/chevron-derecho.png'
 
-function Carrousel({ seleccionado }) {
+function Carrousel({ seleccionado, isDarkMode }) {
     const [indexPhoto, setIndexPhoto] = useState(0);
     const [cars, setCars] = useState([]);
     const [showInfo, setShowInfo] = useState(false);
@@ -46,18 +46,18 @@ function Carrousel({ seleccionado }) {
         if (diff > 50) { closeMenu(); touchStartY.current = null; }
     };
 
-    if (totalCars === 0) return <div className="p-10 text-center text-gray-400 italic">Carregant cotxes...</div>;
+    if (totalCars === 0) return <div className={`p-10 text-center ${isDarkMode ? "text-gray-100" : "text-gray-400"} italic`}>Carregant cotxes...</div>;
 
     return (
         <div className='w-full h-full flex flex-row justify-center items-center relative overflow-hidden'>
             <div
-                className={`fixed inset-0 bg-black/60 transition-opacity duration-300 ${showInfo ? 'opacity-100 z-40' : 'opacity-0 pointer-events-none z-0'}`}
+                className={`fixed inset-0 ${ isDarkMode ? "bg-white/60" : "bg-black/60"} transition-opacity duration-300 ${showInfo ? 'opacity-100 z-40' : 'opacity-0 pointer-events-none z-0'}`}
                 onClick={closeMenu}
             />
             <div
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
-                className={`fixed top-0 left-0 w-full bg-white z-50 transition-transform duration-500 ease-in-out transform rounded-b-3xl max-h-[90vh] overflow-y-auto
+                className={`fixed top-0 left-0 w-full ${ isDarkMode ? "bg-black" : "bg-white"} z-50 transition-transform duration-500 ease-in-out transform rounded-b-3xl max-h-[90vh] overflow-y-auto
                     ${showInfo ? 'translate-y-0 shadow-2xl' : '-translate-y-full'}`}
             >
                 <div className="p-6 flex flex-col items-center">
@@ -71,13 +71,13 @@ function Carrousel({ seleccionado }) {
                                 />
                             </div>
 
-                            <div className="text-center w-full max-w-md text-blue-950 gap-1 flex flex-col mb-4">
+                            <div className={`text-center w-full max-w-md ${ isDarkMode ? "text-blue-100" : "text-blue-950"} gap-1 flex flex-col mb-4`}>
                                 <h3 className="text-xl font-bold uppercase">{currentCar.name.replaceAll('-', ' ')}</h3>
-                                <p className="text-gray-600 text-xs">{currentCar.description.replaceAll('-', ' ') || "Sense descripció."}</p>
+                                <p className={`${isDarkMode ? "text-gray-100" : "text-gray-600"} text-xs`}>{currentCar.description.replaceAll('-', ' ') || "Sense descripció."}</p>
                             </div>
                             {currentCar.images && currentCar.images.length > 0 && (
                                 <div className="w-full max-w-sm mt-2 px-2">
-                                    <h4 className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Toca para ampliar</h4>
+                                    <h4 className={`text-[10px] font-bold ${isDarkMode ? "text-gray-100" : "text-gray-400"} mb-2 uppercase tracking-widest`}>Toca para ampliar</h4>
                                     <div ref={scrollRef} className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
                                         <img
                                             src={`https://uxiaweb2.ieti.site${currentCar.image}`}
@@ -118,7 +118,7 @@ function Carrousel({ seleccionado }) {
                 {cars.map((photo, index) => (
                     indexPhoto === index && (
                         <div key={photo.id || index} className="flex flex-col w-full">
-                            <h3 className="text-xl font-bold uppercase text-[#162354] mb-2">{photo.name.replaceAll('-', ' ')}</h3>
+                            <h3 className={`text-xl font-bold uppercase ${isDarkMode ? "text-[#5578f5]" : "text-[#162354]"} mb-2`}>{photo.name.replaceAll('-', ' ')}</h3>
                             <img
                                 src={`https://uxiaweb2.ieti.site${photo.image}`}
                                 alt={photo.name.replaceAll('-', ' ')}

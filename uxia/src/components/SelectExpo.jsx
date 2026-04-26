@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-const SelectExpo = ({ seleccionado, setSeleccionado }) => {
+const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     const [open, setOpen] = useState(false);
     const [expo, setExpo] = useState([]);
     const [expoSelected, setExpoSelected] = useState([]);
@@ -68,7 +68,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
             </div>
 
             <input
-                className="w-full border-1 border-solid p-2 pl-10 border-gray-200 rounded-sm focus:outline-none focus:border-blue-400"
+                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none focus:border-sky-500 " + (isDarkMode ? "border-gray-50  placeholder-gray-50" : "border-gray-200 placeholder-dark")}
                 type="text"
                 placeholder="Escriu almenys 3 lletres per buscar..."
                 onChange={(e) => setSeleccionado(e.target.value)}
@@ -76,15 +76,15 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
             />
 
             {/* He cambiado border-1 por border-x border-b para quitar la línea superior */}
-            <div className={`border-x border-b border-solid border-gray-200 rounded-b-sm absolute left-0 right-0 z-50 shadow-xl bg-white max-h-40 overflow-y-auto top-full ${!open ? "hidden" : ""}`} tabIndex="-1">
+            <div className={`border-x border-b border-solid rounded-b-sm absolute left-0 right-0 z-50 shadow-xl ${isDarkMode ? "bg-black border-gray-700" : "bg-white border-gray-200"} max-h-40 overflow-y-auto top-full ${!open ? "hidden" : ""}`} tabIndex="-1">
                 {seleccionado.length >= 3 && expoSelected.length > 0 && expoSelected.map((nombre) => (
                     <p key={nombre}
                         onClick={() => {
                             setSeleccionado(nombre);
                             setOpen(false);
                         }}
-                        className={`cursor-pointer px-4 py-2 text-left transition-colors hover:bg-gray-50 text-black ${
-                            seleccionado === nombre ? "bg-blue-50" : ""
+                        className={`cursor-pointer px-4 py-2 text-left transition-colors ${isDarkMode ? "hover:bg-gray-750 text-white" : "hover:bg-gray-50 text-black"} ${
+                            seleccionado === nombre ? `${isDarkMode ? "bg-sky-500" :"bg-blue-50"}` : ""
                         }`}
                     >
                         {nombre}
@@ -92,7 +92,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado }) => {
                 ))}
 
                 {seleccionado.length >= 3 && expoSelected.length === 0 && (
-                    <p className="px-4 py-2 text-gray-400">No s'han trobat resultats</p>
+                    <p className={`px-4 py-2 ${isDarkMode ? "text-gray-800 text-white" : "text-gray-400"}`}>No s'han trobat resultats</p>
                 )}
             </div>
         </div>

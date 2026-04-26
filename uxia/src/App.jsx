@@ -5,6 +5,7 @@ import Carrousel from './components/Carrousel'
 import SelectExpo from './components/SelectExpo';
 import Header from './components/Header';
 import { CameraMaria } from './components/CameraMaria';
+import {ThemeContext} from './context/themeContext'
 
 function App() {
   const [seleccionado, setSeleccionado] = useState("");
@@ -12,7 +13,9 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
   return (
     <div className='flex flex-col min-h-screen w-full'>
-      <Header isDarkMode={isDarkMode}/>
+      <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
+        <Header />
+      </ ThemeContext.Provider>
       <main className={'p-5 grow flex flex-col items-center justify-center w-full ' + (isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50')}>
         {!showCamera && (
           <>

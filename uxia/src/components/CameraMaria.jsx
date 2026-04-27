@@ -72,7 +72,6 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
             <h2 className={`text-xl font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"} tracking-tight`}>marIA 2.0</h2>
             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">IA Vision System</p>
           </div>
-
           <button
             onClick={() => { setShowCamera(false); setPreview(null); setResultado(null); }}
             className="p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer transition-all rounded-full hover:bg-slate-100 active:scale-90"
@@ -82,47 +81,56 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
         </div>
 
         <div className="space-y-4">
-          <div className="flex flex-col items-center justify-center">
-            <label className={`
-              group relative flex items-center justify-center w-full sm:max-w-[300px] h-[58px]
-              rounded-full font-semibold transition-all duration-300 ease-in-out border border-slate-200/60
-              ${loading
-                ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-inner'
-                : 'bg-white text-slate-800 hover:bg-blue-50/40 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 cursor-pointer'}
-            `}>
+          <div className={`p-[1px] rounded-full bg-gradient-to-r ${
+            isDarkMode
+              ? "from-blue-900/50 via-slate-800 to-orange-100/50"
+              : "from-blue-100/50 via-slate-200 to-orange-100/50"
+          } shadow-sm w-full`}>
+            
+            <label
+              className={`cursor-pointer flex items-center justify-center py-3.5
+              ${isDarkMode
+                ? "bg-slate-950 hover:bg-blue-950/50 text-slate-50"
+                : "bg-slate-50 hover:bg-blue-50/50 text-slate-800"}
+              rounded-full font-semibold tracking-wide transition-all duration-300 ease-out
+              hover:shadow-md hover:-translate-y-0.5 active:scale-95
+              ${loading ? "opacity-50 cursor-not-allowed" : ""}
+              `}
+            >
               {loading ? (
                 <div className="flex items-center space-x-3">
-                  <svg className="animate-spin h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
+                  <svg className="animate-spin h-5 w-5 text-blue-500" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" />
                   </svg>
-                  <span className="text-sm font-bold text-slate-500">Analitzant...</span>
+                  <span className="text-base font-semibold">Analitzant...</span>
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
-                  <CameraIcon className="w-5 h-5 text-blue-400 stroke-[2]" />
-                  <span className="text-sm">{preview ? "Canviar foto" : "Fer o pujar foto"}</span>
+                  <CameraIcon
+                    className={`w-6 h-6 stroke-[1.5] ${
+                      isDarkMode ? "text-sky-400" : "text-blue-400"
+                    }`}
+                  />
+                  <span className="text-base">
+                    {preview ? "Canviar foto" : "Fer o pujar foto"}
+                  </span>
                 </div>
               )}
-              <input type="file" accept="image/*" capture="environment" onChange={handleFileUpload} disabled={loading} className="hidden" />
+
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleFileUpload}
+                disabled={loading}
+                className="hidden"
+              />
             </label>
           </div>
 
           {resultado && (
-            <div className="mt-4 p-4 bg-gradient-to-br from-blue-50/30 to-white rounded-2xl border border-blue-100/40 shadow-sm animate-in zoom-in-95 slide-in-from-top-2 duration-300">
-              <p className="text-slate-600 text-center text-sm italic font-medium leading-relaxed">
+            <div className="mt-4 p-4 from-blue-50/30 rounded-2xl border border-blue-100/40 shadow-sm animate-in zoom-in-95 slide-in-from-top-2 duration-300">
+              <p className={"text-center text-sm italic font-medium leading-relaxed " + (isDarkMode ? "text-white " : "text-black")}>
                 "{resultado.descripcio}"
               </p>
             </div>

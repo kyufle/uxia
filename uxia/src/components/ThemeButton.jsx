@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 
 export default function ThemeButton({ isDarkMode, setIsDarkMode }) {
   useEffect(() => {
@@ -17,23 +18,27 @@ export default function ThemeButton({ isDarkMode, setIsDarkMode }) {
     <button
       onClick={toggleTheme}
       className={`
-        relative w-14 h-14 flex items-center justify-center
+        cursor-pointer relative w-14 h-14 flex items-center justify-center
         rounded-full transition-all duration-500 ease-in-out
-        shadow-md border
-        ml-auto
+        shadow-md border ml-auto overflow-hidden
         ${isDarkMode 
-          ? "bg-yellow-400 text-gray-900 border-yellow-300 rotate-180" 
-          : "bg-gray-900 text-yellow-400 border-gray-700 rotate-0"
+          ? "bg-yellow-400 border-yellow-300 rotate-180" 
+          : "bg-gray-900 border-gray-700 rotate-0"
         }
       `}
     >
-      <span className={`text-2xl transition-colors duration-300 ${isDarkMode ? "text-yellow-300" : "text-gray-900"}`}>
-        ☀️
-      </span>
+      {/* Glow */}
       <span className={`
-        absolute inset-0 rounded-full blur-md opacity-30 transition-all duration-500
+        absolute inset-0 rounded-full opacity-30
         ${isDarkMode ? "bg-yellow-300" : "bg-gray-800"}
       `} />
+
+      {/* Icon */}
+      {isDarkMode ? (
+        <MoonIcon className="w-6 h-6 text-black relative z-10" />
+      ) : (
+        <SunIcon className="w-6 h-6 text-yellow-400 relative z-10" />
+      )}
     </button>
   );
 }

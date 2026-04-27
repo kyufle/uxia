@@ -16,14 +16,14 @@ function App() {
     return localStorage.getItem('cookie-consent') === 'true';
   });
 
-  useEffect(() => {
-  const consent = localStorage.getItem('cookie-consent') === 'true';
-  if (consent) {
-    window.gtag?.('consent', 'update', {
-      'analytics_storage': 'granted'
-    });
-  }
-}, []);
+//   useEffect(() => {
+//   const consent = localStorage.getItem('cookie-consent') === 'true';
+//   if (consent) {
+//     window.gtag?.('consent', 'update', {
+//       'analytics_storage': 'granted'
+//     });
+//   }
+// }, []);
   return (
     <div className='flex flex-col min-h-screen w-full'>
 

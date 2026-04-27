@@ -36,8 +36,8 @@ def get_coches_expo(request):
     return devolver_json_coches(items)
 
 @api_view(['GET'])
-def get_items_expo(request, id_expo):
-    items = Item.objects.filter(expo_id=id_expo)
+def get_items_expo(request, name_expo):
+    items = Item.objects.filter(expo__name__iexact=name_expo)
     return devolver_json_coches(items)
 
 def devolver_json_coches(items):

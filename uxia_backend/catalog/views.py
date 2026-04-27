@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Item, Expo, Image
+from django.db.models import Q
 
 @api_view(['GET'])
 def get_coches(request):
@@ -13,11 +14,16 @@ def get_coches(request):
 
 @api_view(['GET'])
 def get_expo(request):
-    query = request.GET.get('expo', '')
+    query = request.GET.get('search', '')
+
     if query:
-        items = Item.objects.filter(expo__name__icontains=query)
+        items = Item.objects.filter(
+            Q(expo__name__icontains=query) | 
+            Q(coche__nombre__icontains=query)
+        ).distinct()
     else:
         items = Item.objects.all()
+
     return devolver_json_coches(items)
 
 @api_view(['GET'])

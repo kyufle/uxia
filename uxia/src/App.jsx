@@ -6,12 +6,24 @@ import SelectExpo from './components/SelectExpo';
 import Header from './components/Header';
 import { CameraMaria } from './components/CameraMaria';
 import {ThemeContext} from './context/themeContext'
+import CookieBanner from './components/CookieModal';
 
 function App() {
   const [seleccionado, setSeleccionado] = useState("");
   const [showCamera, setShowCamera] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const [hasConsent, setHasConsent] = useState(() => {
+    return localStorage.getItem('cookie-consent') === 'true';
+  });
 
+  useEffect(() => {
+  const consent = localStorage.getItem('cookie-consent') === 'true';
+  if (consent) {
+    window.gtag?.('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+}, []);
   return (
     <div className='flex flex-col min-h-screen w-full'>
 
@@ -51,6 +63,7 @@ function App() {
           </div>
         </div>
       </main>
+      <CookieBanner isDarkMode={isDarkMode} setHasConsent={setHasConsent} />
       <Footer isDarkMode={isDarkMode} />
     </div>
   )

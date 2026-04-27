@@ -11,34 +11,51 @@ function Carrousel({ seleccionado, isDarkMode }) {
     const scrollRef = useRef(null);
 
     useEffect(() => {
-        async function chargeCarsExpo() {
+        async function chargeData() {
+            if (!seleccionado) {
+                setCars([]);
+                return;
+            }
+            
             try {
-                const response = await fetch(`https://uxiaweb2.ieti.site/api/coches_expo/?expo=${seleccionado}`);
+                const response = await fetch(`https://uxiaweb2.ieti.site/api/expo/?search=${seleccionado}`);
                 if (!response.ok) throw new Error(`Status: ${response.status}`);
                 const data = await response.json();
-                setCars(data);
-                setIndexPhoto(0);
+
+                if (data.length > 0) {
+                    const cleanData = data.map(car => ({
+                        ...car,
+                        name: car.name.replaceAll('-', ' '),
+                        expo: car.expo.replaceAll('-', ' ')
+                    }));
+
+                    const targetIndex = cleanData.findIndex(car => car.name.toLowerCase() === seleccionado.toLowerCase());
+
+                    if (targetIndex !== -1) {
+                        setCars(cleanData);
+                        setIndexPhoto(targetIndex);
+                    } else {
+                        const filteredByExpo = cleanData.filter(car => car.expo.toLowerCase() === seleccionado.toLowerCase());
+                        setCars(filteredByExpo);
+                        setIndexPhoto(0);
+                    }
+                }
             } catch (error) {
-                console.error(error.message);
+                console.error("Error en carrusel:", error.message);
             }
         }
-        chargeCarsExpo();
+        chargeData();
     }, [seleccionado]);
-
-    useEffect(() => {
-        setTempImage(null);
-        if (scrollRef.current) scrollRef.current.scrollLeft = 0;
-    }, [indexPhoto]);
-
     const currentCar = cars[indexPhoto];
     const totalCars = cars.length;
     const handleInfo = () => {
-        setTempImage(currentCar.image);
-        setShowInfo(true);
+        if (currentCar) {
+            setTempImage(currentCar.image);
+            setShowInfo(true);
+        }
     };
 
     const closeMenu = () => setShowInfo(false);
-
     const onTouchStart = (e) => { touchStartY.current = e.targetTouches[0].clientY; };
     const onTouchMove = (e) => {
         if (touchStartY.current === null) return;
@@ -46,7 +63,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
         if (diff > 50) { closeMenu(); touchStartY.current = null; }
     };
 
-    if (totalCars === 0) return <div className={`p-10 text-center ${isDarkMode ? "text-gray-100" : "text-gray-400"} italic`}>Carregant cotxes...</div>;
+    if (totalCars === 0) return <div className={`p-10 text-center ${isDarkMode ? "text-gray-100" : "text-gray-400"} italic`}>Busca una expo o un cotxe...</div>;
 
     return (
         <div className='w-full h-full flex flex-row justify-center items-center relative overflow-hidden'>
@@ -66,30 +83,27 @@ function Carrousel({ seleccionado, isDarkMode }) {
                             <div className="w-full max-w-sm mb-4">
                                 <img
                                     src={`https://uxiaweb2.ieti.site${tempImage || currentCar.image}`}
-                                    alt={currentCar.name.replaceAll('-', ' ')}
+                                    alt={currentCar.name}
                                     className="w-full h-56 object-cover rounded-2xl shadow-md transition-all duration-300"
                                 />
                             </div>
-
                             <div className={`text-center w-full max-w-md ${ isDarkMode ? "text-blue-100" : "text-blue-950"} gap-1 flex flex-col mb-4`}>
                                 <h3 className="text-xl font-bold uppercase">{currentCar.name.replaceAll('-', ' ')}</h3>
-                                <p className={`${isDarkMode ? "text-gray-100" : "text-gray-600"} text-xs`}>{currentCar.description.replaceAll('-', ' ') || "Sense descripció."}</p>
+                                <p className={`${isDarkMode ? "text-gray-100" : "text-gray-600"} text-xs`}>{currentCar.description ? currentCar.description.replaceAll('-', ' ') : "Sense descripció."}</p>
                             </div>
                             {currentCar.images && currentCar.images.length > 0 && (
                                 <div className="w-full max-w-sm mt-2 px-2">
-                                    <h4 className={`text-[10px] font-bold ${isDarkMode ? "text-gray-100" : "text-gray-400"} mb-2 uppercase tracking-widest`}>Toca para ampliar</h4>
+                                    <h4 className={`text-[10px] font-bold ${isDarkMode ? "text-gray-100" : "text-gray-400"} mb-2 uppercase tracking-widest`}>Més fotos</h4>
                                     <div ref={scrollRef} className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
                                         <img
                                             src={`https://uxiaweb2.ieti.site${currentCar.image}`}
                                             onClick={() => setTempImage(currentCar.image)}
                                             className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all ${(!tempImage || tempImage === currentCar.image) ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                         />
-
                                         {currentCar.images.filter(img => img !== currentCar.image).map((imgUrl, idx) => (
                                             <img
                                                 key={idx}
                                                 src={`https://uxiaweb2.ieti.site${imgUrl}`}
-                                                alt={`Vista ${idx}`}
                                                 onClick={() => setTempImage(imgUrl)}
                                                 className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all cursor-pointer ${tempImage === imgUrl ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                             />
@@ -102,9 +116,8 @@ function Carrousel({ seleccionado, isDarkMode }) {
                     <div className="mt-2 w-10 h-1 bg-gray-200 rounded-full cursor-pointer" onClick={closeMenu}></div>
                 </div>
             </div>
-
             <div className="absolute top-12 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium z-30">
-                Cotxe {indexPhoto + 1} de {totalCars}
+                {indexPhoto + 1} / {totalCars}
             </div>
 
             <button
@@ -115,19 +128,22 @@ function Carrousel({ seleccionado, isDarkMode }) {
             </button>
 
             <div className="flex justify-center items-center w-full h-full">
-                {cars.map((photo, index) => (
-                    indexPhoto === index && (
-                        <div key={photo.id || index} className="flex flex-col w-full">
-                            <h3 className={`text-xl font-bold uppercase ${isDarkMode ? "text-[#5578f5]" : "text-[#162354]"} mb-2`}>{photo.name.replaceAll('-', ' ')}</h3>
-                            <img
-                                src={`https://uxiaweb2.ieti.site${photo.image}`}
-                                alt={photo.name.replaceAll('-', ' ')}
-                                className="w-full h-[275px] object-cover rounded-xl cursor-pointer"
-                                onClick={handleInfo}
-                            />
-                        </div>
-                    )
-                ))}
+                {currentCar && (
+                    <div key={currentCar.id} className="flex flex-col w-full px-4">
+                        <h3 className={`text-xl font-bold uppercase ${isDarkMode ? "text-[#5578f5]" : "text-[#162354]"} mb-2`}>
+                            {currentCar.name.replaceAll('-', ' ')}
+                        </h3>
+                        <img
+                            src={`https://uxiaweb2.ieti.site${currentCar.image}`}
+                            alt={currentCar.name}
+                            className="w-full h-[275px] object-cover rounded-xl cursor-pointer shadow-lg"
+                            onClick={handleInfo}
+                        />
+                        <p className={`mt-2 text-center text-xs font-semibold ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                            Expo: {currentCar.expo}
+                        </p>
+                    </div>
+                )}
             </div>
 
             <button

@@ -122,7 +122,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
                             <img
                                 src={`https://uxiaweb2.ieti.site${photo.image}`}
                                 alt={photo.name.replaceAll('-', ' ')}
-                                className="w-full h-[250px] object-cover rounded-xl cursor-pointer"
+                                className="w-full h-[275px] object-cover rounded-xl cursor-pointer"
                                 onClick={handleInfo}
                             />
                         </div>

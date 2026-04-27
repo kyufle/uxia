@@ -11,7 +11,6 @@ function App() {
   const [seleccionado, setSeleccionado] = useState("");
   const [showCamera, setShowCamera] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
-  
 
   return (
     <div className='flex flex-col min-h-screen w-full'>

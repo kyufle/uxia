@@ -12,13 +12,13 @@ function Carrousel({ seleccionado, isDarkMode }) {
 
     useEffect(() => {
         async function chargeCarsExpo() {
-            } catch (error) {
             try {
                 const response = await fetch(`https://uxiaweb2.ieti.site/api/coches_expo/?expo=${seleccionado}`);
                 if (!response.ok) throw new Error(`Status: ${response.status}`);
                 const data = await response.json();
                 setCars(data);
                 setIndexPhoto(0);
+            } catch (error) {
                 console.error(error.message);
             }
         }

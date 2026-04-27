@@ -1,7 +1,7 @@
 import { CameraIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react';
 
-export function CameraMaria({ showCamera, setShowCamera }) {
+export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   const [loading, setLoading] = useState(false);
   const [resultado, setResultado] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -38,14 +38,18 @@ export function CameraMaria({ showCamera, setShowCamera }) {
   if (!showCamera) {
     return (
       <div className="flex justify-center my-8 px-4 font-sans antialiased animate-in fade-in duration-300">
-        <div className="p-[1px] rounded-full bg-gradient-to-r from-blue-100/50 via-slate-200 to-orange-100/50 shadow-sm w-full sm:w-auto">
+        <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} shadow-sm w-full sm:w-auto`}>
           <button
             onClick={() => setShowCamera(true)}
-            className="cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-[280px] px-8 py-3.5 bg-slate-50 text-slate-800 rounded-full font-semibold tracking-wide transition-all duration-300 ease-out hover:bg-blue-50/50 hover:shadow-md hover:-translate-y-0.5 active:scale-95"
+            className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5 ${isDarkMode ? "bg-slate-950 hover:bg-blue-950/50" : "bg-slate-50ff hover:bg-blue-50/50"} + " rounded-full font-semibold tracking-wide transition-all duration-300 ease-out hover:shadow-md hover:-translate-y-0.5 active:scale-95`}
           >
-            <CameraIcon className="w-6 h-6 text-blue-400 stroke-[1.5]" />
+            <CameraIcon
+              className={`w-6 h-6 stroke-[1.5] ${
+                isDarkMode ? "text-sky-400" : "text-blue-400"
+              }`}
+            />
             <span className="text-base">
-              Obrir <span className="font-bold text-slate-950">marIA 2.0</span>
+              Obrir <span className={`font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>marIA 2.0</span>
             </span>
             <span className="relative flex h-2 w-2 ml-1">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-300 opacity-75"></span>
@@ -58,20 +62,20 @@ export function CameraMaria({ showCamera, setShowCamera }) {
   }
 
   return (
-    <div className="w-full font-sans antialiased animate-in fade-in slide-in-from-top-2 duration-500 ease-out">
+    <div className={"w-full font-sans antialiased animate-in fade-in slide-in-from-top-2 duration-500 ease-out" + (isDarkMode && " bg-black")}>
       <div className="relative flex items-center py-4 px-2">
-        <div className="flex-grow border-t border-slate-100 shadow-[0_-1px_2px_rgba(0,0,0,0.03)]"></div>
+        <div className={`flex-grow border-t ${isDarkMode ? "border-slate-900 shadow-[0_-1px_2px_rgba(255,255,255,0.03)]" : "border-slate-100 shadow-[0_-1px_2px_rgba(0,0,0,0.03)]"}`}></div>
       </div>
       <div className="px-6 pb-6 min-h-[200px] flex flex-col justify-center">
         <div className="flex justify-between items-center mb-6">
           <div className="text-left">
-            <h2 className="text-xl font-bold text-slate-950 tracking-tight">marIA 2.0</h2>
+            <h2 className={`text-xl font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"} tracking-tight`}>marIA 2.0</h2>
             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">IA Vision System</p>
           </div>
 
           <button
             onClick={() => { setShowCamera(false); setPreview(null); setResultado(null); }}
-            className="p-1.5 text-slate-400 hover:text-slate-600 transition-all rounded-full hover:bg-slate-100 active:scale-90"
+            className="p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer transition-all rounded-full hover:bg-slate-100 active:scale-90"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>

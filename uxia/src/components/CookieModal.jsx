@@ -12,9 +12,10 @@ const CookieModal = ({ isDarkMode, setHasConsent }) => {
 const acceptCookies = () => {
   localStorage.setItem('cookie-consent', 'true');
   setHasConsent(true);
-  window.gtag?.('consent', 'update', {
-    'analytics_storage': 'granted'
-  });
+  location.reload();
+  // window.gtag?.('consent', 'update', {
+  //   'analytics_storage': 'granted'
+  // });
 
   setIsVisible(false);
 };

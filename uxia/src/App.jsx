@@ -13,7 +13,7 @@ function App() {
   return (
     <div className='flex flex-col min-h-screen w-full'>
       <Header />
-      <main className='flex-grow flex flex-col items-center justify-center w-full bg-gray-50 p-5'>
+      <main className='flex-grow flex flex-col items-center w-full bg-gray-50 p-5'>
         {!showCamera && (
           <>
             <div className='w-full max-w-xs md:max-w-md xl:w-200 xl:px-20'>

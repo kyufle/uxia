@@ -68,7 +68,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
             </div>
 
             <input
-                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none focus:border-sky-500 " + (isDarkMode ? "border-gray-50  placeholder-gray-50" : "border-gray-200 placeholder-dark")}
+                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none " + (isDarkMode ? "border-gray-50  placeholder-gray-50 focus:border-orange-300" : "border-gray-200 placeholder-dark focus:border-sky-500")}
                 type="text"
                 placeholder="Escriu almenys 3 lletres per buscar..."
                 onChange={(e) => setSeleccionado(e.target.value)}
@@ -84,7 +84,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
                             setOpen(false);
                         }}
                         className={`cursor-pointer px-4 py-2 text-left transition-colors ${isDarkMode ? "hover:bg-gray-750 text-white" : "hover:bg-gray-50 text-black"} ${
-                            seleccionado === nombre ? `${isDarkMode ? "bg-sky-500" :"bg-blue-50"}` : ""
+                            seleccionado === nombre ? `${isDarkMode ? "bg-gray-700" :"bg-blue-50"}` : ""
                         }`}
                     >
                         {nombre}
@@ -92,7 +92,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
                 ))}
 
                 {seleccionado.length >= 3 && expoSelected.length === 0 && (
-                    <p className={`px-4 py-2 ${isDarkMode ? "text-gray-800 text-white" : "text-gray-400"}`}>No s'han trobat resultats</p>
+                    <p className={`px-4 py-2 ${isDarkMode ? "text-white" : "text-gray-400"}`}>No s'han trobat resultats</p>
                 )}
             </div>
         </div>

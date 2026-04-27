@@ -73,7 +73,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
 
                             <div className={`text-center w-full max-w-md ${ isDarkMode ? "text-blue-100" : "text-blue-950"} gap-1 flex flex-col mb-4`}>
                                 <h3 className="text-xl font-bold uppercase">{currentCar.name.replaceAll('-', ' ')}</h3>
-                                <p className={`${isDarkMode ? "text-gray-100" : "text-gray-600"} text-xs`}>{currentCar.description.replaceAll('-', ' ') || "Sense descripció."}</p>
+                                <p className={`${isDarkMode ? "text-orange-300" : "text-gray-600"} text-xs`}>{currentCar.description.replaceAll('-', ' ') || "Sense descripció."}</p>
                             </div>
                             {currentCar.images && currentCar.images.length > 0 && (
                                 <div className="w-full max-w-sm mt-2 px-2">
@@ -118,7 +118,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
                 {cars.map((photo, index) => (
                     indexPhoto === index && (
                         <div key={photo.id || index} className="flex flex-col w-full">
-                            <h3 className={`text-xl font-bold uppercase ${isDarkMode ? "text-[#5578f5]" : "text-[#162354]"} mb-2`}>{photo.name.replaceAll('-', ' ')}</h3>
+                            <h3 className={`text-xl font-bold uppercase ${isDarkMode ? "text-orange-300" : "text-[#162354]"} mb-2`}>{photo.name.replaceAll('-', ' ')}</h3>
                             <img
                                 src={`https://uxiaweb2.ieti.site${photo.image}`}
                                 alt={photo.name.replaceAll('-', ' ')}

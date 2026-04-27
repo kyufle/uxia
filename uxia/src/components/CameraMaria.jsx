@@ -138,7 +138,6 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
             <h2 className={`text-xl font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"} tracking-tight`}>marIA 2.0</h2>
             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">IA Vision System</p>
           </div>
-
           <button
 
             onClick={() => { 
@@ -162,31 +161,62 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
           ) : isMobile ? ( 
 
             //  MÓVIL
-            <label className="cursor-pointer px-6 py-3 bg-white rounded-full shadow flex items-center space-x-2">
-              <CameraIcon className="w-5 h-5 text-blue-400" />
-              <span>{preview ? "Canviar foto" : "Fer foto"}</span>
+            <div className={`p-[1px] rounded-full bg-gradient-to-r ${
+              isDarkMode
+                ? "from-blue-900/50 via-slate-800 to-orange-100/50"
+                : "from-blue-100/50 via-slate-200 to-orange-100/50"
+            } shadow-sm w-full sm:w-auto`}>
+              
+              <label
+                className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5
+                ${isDarkMode
+                  ? "bg-slate-950 text-slate-50 hover:bg-blue-950/50"
+                  : "bg-slate-50 text-slate-800 hover:bg-blue-50/50"}
+                rounded-full font-semibold tracking-wide transition-all duration-300 ease-out
+                hover:shadow-md hover:-translate-y-0.5 active:scale-95`}
+              >
+                <CameraIcon className={`w-6 h-6 stroke-[1.5] ${
+                  isDarkMode ? "text-sky-400" : "text-blue-400"
+                }`} />
+                
+                <span className="text-base">
+                  {preview ? "Canviar foto" : "Fer foto"}
+                </span>
 
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-            </label>
-
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
           ) : (
             //  PC
             !stream ? (
-              <button
-                onClick={openCamera}
-                className={`px-6 py-3 rounded-full shadow flex items-center space-x-2 transition-colors
-                ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"}
-              `}
-              >
-                <CameraIcon className="w-5 h-5 text-blue-400" />
-                <span>Obrir càmera</span>
-              </button>
+              <div className={`p-[1px] rounded-full bg-gradient-to-r ${
+                isDarkMode
+                  ? "from-blue-900/50 via-slate-800 to-orange-100/50"
+                  : "from-blue-100/50 via-slate-200 to-orange-100/50"
+              } shadow-sm w-full sm:w-auto`}>
+
+                <button
+                  onClick={openCamera}
+                  className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5
+                  ${isDarkMode
+                    ? "bg-slate-950 text-slate-50 hover:bg-blue-950/50"
+                    : "bg-slate-50 text-slate-800 hover:bg-blue-50/50"}
+                  rounded-full font-semibold tracking-wide transition-all duration-300 ease-out
+                  hover:shadow-md hover:-translate-y-0.5 active:scale-95`}
+                >
+                  <CameraIcon className={`w-6 h-6 stroke-[1.5] ${
+                    isDarkMode ? "text-sky-400" : "text-blue-400"
+                  }`} />
+                  
+                  <span className="text-base">Obrir càmera</span>
+                </button>
+              </div>
             ) : (
               <div className="flex flex-col items-center space-y-3">
                 <video
@@ -197,7 +227,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
                 />
                 <button
                   onClick={takePhoto}
-                  className="px-4 py-2 bg-green-500 text-white rounded-full"
+                  className="px-4 py-2 bg-green-500 cursor-pointer hover:scale-90 transition-all text-white rounded-full"
                 >
                   Fer foto
                 </button>
@@ -207,8 +237,8 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
         </div>
 
           {resultado && (
-            <div className="mt-4 p-4 bg-gradient-to-br from-blue-50/30 to-white rounded-2xl border border-blue-100/40 shadow-sm animate-in zoom-in-95 slide-in-from-top-2 duration-300">
-              <p className="text-slate-600 text-center text-sm italic font-medium leading-relaxed">
+            <div className="mt-4 p-4 from-blue-50/30 rounded-2xl border border-blue-100/40 shadow-sm animate-in zoom-in-95 slide-in-from-top-2 duration-300">
+              <p className={"text-center text-sm italic font-medium leading-relaxed " + (isDarkMode ? "text-white " : "text-black")}>
                 "{resultado.descripcio}"
               </p>
             </div>

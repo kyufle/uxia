@@ -139,9 +139,6 @@ function Carrousel({ seleccionado, isDarkMode }) {
                             className="w-full h-[275px] object-cover rounded-xl cursor-pointer shadow-lg"
                             onClick={handleInfo}
                         />
-                        <p className={`mt-2 text-center text-xs font-semibold ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
-                            Expo: {currentCar.expo}
-                        </p>
                     </div>
                 )}
             </div>

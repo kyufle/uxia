@@ -86,7 +86,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
                         {results.coches.length > 0 && (
                             <div>
                                 <div className={`px-4 py-1 text-xs font-bold uppercase tracking-wider ${isDarkMode ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-500"}`}>
-                                    Cotxes
+                                    Cotxes/Items
                                 </div>
                                 {results.coches.map(n => renderItem(n, 'coche'))}
                             </div>

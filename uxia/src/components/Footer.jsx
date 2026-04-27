@@ -4,7 +4,7 @@ import gobiernoEspana from '../../src/assets/footer logos/gobiernoEspana.png'
 
 export default function Footer({isDarkMode}) {
     return (
-        <footer className={`w-full shadow-inner fixed bottom-0 left-0  ${isDarkMode ? "bg-gray-800 text-white" : "bg-white"} z-50`}>
+        <footer className={`w-full shadow-inner ${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
             <div className='max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-4 p-4 sm:p-8 xl:px-20'>
                 <a href="https://sites.google.com/xtec.cat/proyectos-de-innovacion/inicio" className="flex-1 flex justify-start">
                     <img className='w-full max-w-[200px] md:max-w-[300px] xl:w-80' src={isDarkMode ? geneBlack : gene} alt="Logo Generalitat de Catalunya" />

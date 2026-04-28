@@ -19,7 +19,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
             }
             
             try {
-                const response = await fetch(`${config.API_URL}/api/expo/?search=${seleccionado}`);
+                const response = await fetch(`${config.API_URL}/api/expo/`);
                 if (!response.ok) throw new Error(`Status: ${response.status}`);
                 const data = await response.json();
 

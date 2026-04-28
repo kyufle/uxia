@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // Importamos Link
 import './App.css';
 
@@ -17,6 +17,7 @@ import { HistorialChat } from './components/HistorialChat';
 // Pages
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
+import AdminItems from './pages/AdminItems';
 
 // Icons
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
@@ -104,6 +105,7 @@ function App() {
 
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin-items" element={<AdminItems />} />
           </Routes>
 
           {/* Botón Flotante Historial */}

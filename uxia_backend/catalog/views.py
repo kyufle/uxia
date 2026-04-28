@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from .serializers import ItemCardSerializer
 from .models import Item, Expo, Image
 from django.contrib.auth import authenticate
 from django.db.models import Q
@@ -14,16 +15,14 @@ def get_coches(request):
     items = Item.objects.all().select_related('expo').prefetch_related('image_set')
     return devolver_json_coches(items)
 
+
+
 @api_view(['GET'])
 def get_expos(request):
     print("\n--- [BACKEND] Recopilando datos unificados ---")
     try:
-        # 1. Obtenemos los Items usando tu función lógica
         items = Item.objects.select_related('expo').prefetch_related('image_set').all()
-        # Llamamos a tu función, pero OJO: necesitamos los datos, no la Response todavía
         coches_data = devolver_json_coches(items).data 
-
-        # 2. Obtenemos las Exposiciones para el buscador
         expos_data = []
         exposiciones = Expo.objects.all()
         for e in exposiciones:
@@ -35,25 +34,37 @@ def get_expos(request):
                 "image": None,
                 "images": []
             })
-
-        # 3. Combinamos ambas listas
         resultado_final = coches_data + expos_data
-        
-        print(f"--- [BACKEND] Enviando {len(resultado_final)} objetos ---")
         return Response(resultado_final)
-
     except Exception as e:
         print(f"--- [BACKEND] ERROR: {str(e)} ---")
         return Response({"error": str(e)}, status=500)
 
 @api_view(['GET'])
-def get_items_expo(request, expo_identifier):
+def get_expo_items(request):
+    expo_query = request.query_params.get('search', None)
+    try:
+        if not expo_query:
+            return Response({"error": "No se proporcionó el nombre de la exposición"}, status=400)
+        nombre_limpio = expo_query.replace('-', ' ')
+        items = Item.objects.select_related('expo').prefetch_related('image_set').filter(
+            expo__name__iexact=nombre_limpio
+        )
+        if not items.exists():
+            return Response([], status=200)
+        coches_data = devolver_json_coches(items).data 
+        return Response(coches_data)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['GET'])
+def get_items_expo(request, name_expo):
     items = Item.objects.none()
 
-    if expo_identifier.isdigit():
-        items = Item.objects.filter(expo_id=int(expo_identifier))
+    if name_expo.isdigit():
+        items = Item.objects.filter(expo_id=int(name_expo))
     else:
-        expo_name = expo_identifier.replace('-', ' ').strip()
+        expo_name = name_expo.replace('-', ' ').strip()
         items = Item.objects.filter(expo__name__iexact=expo_name)
 
     items = items.select_related('expo').prefetch_related('image_set')

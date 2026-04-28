@@ -7,6 +7,10 @@ from rest_framework import status
 from .models import Item, Expo, Image
 from django.db.models import Q
 
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
 @api_view(['GET'])
 def get_coches(request):
     items = Item.objects.all()
@@ -86,3 +90,36 @@ def foto_maria(request):
     finally:
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
+
+
+#api de login comprueba que el usuario esta en el grupo uxiaAdmin + token JWT para autenticacion en el front.
+@api_view(['POST'])
+def login_admin(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    user = authenticate(username=username, password=password)
+
+    if user is None:
+        return Response(
+            {"error": "Credencials invàlides"},
+            status=401
+        )
+
+    # comprovació de grup (permís admin)
+    if not user.groups.filter(name="uxiaAdmin").exists():
+        return Response(
+            {"error": "No pertany al grup uxiaAdmin"},
+            status=403
+        )
+
+    # 🔐 generar tokens JWT
+    refresh = RefreshToken.for_user(user)
+
+    return Response({
+        "ok": True,
+        "user": user.username,
+        "groups": list(user.groups.values_list("name", flat=True)),
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
+    })

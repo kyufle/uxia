@@ -4,15 +4,32 @@ import os
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Item, Expo, Image
+from .models import Item, Expo
 from django.db.models import Q
-from .models import Historial
-import locale
 
 @api_view(['GET'])
 def get_coches(request):
-    items = Item.objects.all()
+    items = Item.objects.all().select_related('expo').prefetch_related('image_set')
     return devolver_json_coches(items)
+
+@api_view(['GET'])
+def get_expos(request):
+    expos = Expo.objects.all().values('id', 'name', 'state', 'creationDate')
+    return Response(list(expos))
+
+@api_view(['GET'])
+def get_items_expo(request, expo_identifier):
+    items = Item.objects.none()
+
+    if expo_identifier.isdigit():
+        items = Item.objects.filter(expo_id=int(expo_identifier))
+    else:
+        expo_name = expo_identifier.replace('-', ' ').strip()
+        items = Item.objects.filter(expo__name__iexact=expo_name)
+
+    items = items.select_related('expo').prefetch_related('image_set')
+    serializer = ItemCardSerializer(items, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def get_expo(request):
@@ -21,7 +38,7 @@ def get_expo(request):
     if query:
         items = Item.objects.filter(
             Q(expo__name__icontains=query) | 
-            Q(coche__nombre__icontains=query)
+            Q(name__icontains=query)
         ).distinct()
     else:
         items = Item.objects.all()
@@ -35,11 +52,6 @@ def get_coches_expo(request):
         items = Item.objects.filter(expo__name__iexact=query)
     else:
         items = Item.objects.none()
-    return devolver_json_coches(items)
-
-@api_view(['GET'])
-def get_items_expo(request, name_expo):
-    items = Item.objects.filter(expo__name__iexact=name_expo)
     return devolver_json_coches(items)
 
 def devolver_json_coches(items):
@@ -88,49 +100,3 @@ def foto_maria(request):
     finally:
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
-
-@api_view(['POST'])
-def save_historial(request):
-    try:
-        # Extraiem dades del JSON (ja que enviem Base64)
-        has_consent = request.data.get('cookie', False)
-        answers = request.data.get('answers', '')
-        photo_base64 = request.data.get('car_photo', '')
-
-        nuevo_historial = Historial(
-            cookie=has_consent,
-            maria_answers=answers
-        )
-
-        if photo_base64 and ';base64,' in photo_base64:
-            format, imgstr = photo_base64.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name=f"camera_shot.{ext}")
-            nuevo_historial.car_photo.save(f"shot_{datetime.datetime.now().timestamp()}.{ext}", data, save=False)
-
-        nuevo_historial.save()
-        return Response(status=status.HTTP_201_CREATED)
-    except Exception as e:
-        print(f"Error save_historial: {e}")
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def get_historial(request):
-    try:
-        locale.setlocale(locale.LC_TIME, "ca_ES.UTF-8")
-    except:
-        pass
-
-    registros = Historial.objects.all().order_by('created_at')
-    data = []
-    
-    for r in registros:
-        data.append({
-            "id": r.id,
-            "car_photo": r.car_photo.url if r.car_photo else None,
-            "maria_answers": r.maria_answers,
-            "fecha_separador": r.created_at.strftime("%A, %d d'%B %Y").capitalize(),
-            "hora": r.created_at.strftime("%H:%M"),
-        })
-        
-    return Response(data)

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import config from '../config';
 
 const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     const [open, setOpen] = useState(false);
@@ -9,7 +10,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     async function lookforData() {
         if (seleccionado && seleccionado.length >= 3) {
             try {
-                const response = await fetch(`https://uxiaweb2.ieti.site/api/expo/?search=${seleccionado}`);
+                const response = await fetch(`https://${config.API_URL}/api/expo/?search=${seleccionado}`);
                 const data = await response.json();
                 
                 const query = seleccionado.toLowerCase();
@@ -63,7 +64,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
             </div>
 
             <input
-                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none focus:border-sky-500 " + (isDarkMode ? "bg-gray-900 text-white border-gray-700" : "bg-white border-gray-200")}
+                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none " + (isDarkMode ? "bg-gray-900 text-white border-gray-700 focus:border-orange-300" : "bg-white border-gray-200 focus:border-sky-500")}
                 type="text"
                 placeholder="Busca exposicions o cotxes..."
                 onChange={(e) => setSeleccionado(e.target.value)}

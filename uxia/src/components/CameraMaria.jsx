@@ -2,6 +2,7 @@ import { CameraIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react';
 import { useRef } from 'react';
 import { useEffect } from 'react';
+import config from "../config"
 
 
 //para saber si es movil o no, para mostrar un boton de input file en vez de la camara
@@ -81,12 +82,12 @@ const handleFileUpload = async (eventOrFile) => {
     const formData = new FormData();
     formData.append('image', file);
 
-    try {
-      // 1. Petición a la IA para obtener la descripción
-      const response = await fetch('https://uxiaweb2.ieti.site/api/foto/', {
-        method: 'POST',
-        body: formData,
-      });
+  try {
+    console.log(config.API_URL);
+    const response = await fetch(`${config.API_URL}/api/foto/`, {
+      method: 'POST',
+      body: formData,
+    });
 
       if (!response.ok) throw new Error('Error en la resposta del servidor');
 

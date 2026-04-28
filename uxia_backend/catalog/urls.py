@@ -6,8 +6,8 @@ urlpatterns = [
     path('expo/', get_expo, name='get_expo'),
     path('foto/', foto_maria, name='foto_maria'),
     path('coches_expo/',get_coches_expo, name='get_coches_expo'),
-    path('save_historial/', views.save_historial, name='save_historial'),
-    path('get_historial/', views.get_historial, name='get_historial'),
+    #path('save_historial/', views.save_historial, name='save_historial'),
+    #path('get_historial/', views.get_historial, name='get_historial'),
     path('items_expo/<str:name_expo>/', get_items_expo),
     path("api/admin-login/", login_admin),
 ]

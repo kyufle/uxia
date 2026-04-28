@@ -63,7 +63,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
             </div>
 
             <input
-                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none focus:border-sky-500 " + (isDarkMode ? "bg-gray-900 text-white border-gray-700" : "bg-white border-gray-200")}
+                className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none " + (isDarkMode ? "bg-gray-900 text-white border-gray-700 focus:border-orange-300" : "bg-white border-gray-200 focus:border-sky-500")}
                 type="text"
                 placeholder="Busca exposicions o cotxes..."
                 onChange={(e) => setSeleccionado(e.target.value)}

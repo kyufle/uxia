@@ -2,6 +2,7 @@ import { CameraIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react';
 import { useRef } from 'react';
 import { useEffect } from 'react';
+import config from "../config"
 
 
 //para saber si es movil o no, para mostrar un boton de input file en vez de la camara
@@ -84,7 +85,8 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   formData.append('image', file);
 
   try {
-    const response = await fetch('https://uxiaweb2.ieti.site/api/foto/', {
+    console.log(config.API_URL);
+    const response = await fetch(`${config.API_URL}/api/foto/`, {
       method: 'POST',
       body: formData,
     });

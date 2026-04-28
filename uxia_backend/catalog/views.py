@@ -172,3 +172,47 @@ def login_admin(request):
         "access": str(refresh.access_token),
         "refresh": str(refresh),
     })
+
+@api_view(['POST'])
+def create_item_admin(request):
+    """
+    Crea un nuevo Item. 
+    Espera: name, description, expo (ID o nombre), featured_image (archivo)
+    """
+    try:
+        data = request.data
+        
+        # 1. Buscar la Expo (por ID o por Nombre)
+        expo_val = data.get('expo')
+        if not expo_val:
+            return Response({"error": "Falta el camp 'expo'"}, status=400)
+            
+        try:
+            if str(expo_val).isdigit():
+                expo_obj = Expo.objects.get(id=int(expo_val))
+            else:
+                expo_obj = Expo.objects.get(name__iexact=expo_val.replace('-', ' '))
+        except Expo.DoesNotExist:
+            return Response({"error": "L'exposició no existeix"}, status=404)
+
+        # 2. Crear el Item
+        nuevo_item = Item.objects.create(
+            name=data.get('name'),
+            description=data.get('description', ''),
+            expo=expo_obj,
+            featured_image=request.FILES.get('featured_image') # Soporta archivo físico
+        )
+
+        # 3. (Opcional) Si envías varias imágenes para la galería
+        extra_images = request.FILES.getlist('images')
+        for img in extra_images:
+            Image.objects.create(path=img, item=nuevo_item, isPublic=True)
+
+        return Response({
+            "message": "Item creat amb èxit",
+            "id": nuevo_item.id,
+            "name": nuevo_item.name
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)

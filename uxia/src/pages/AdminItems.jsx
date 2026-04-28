@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminExpoItems from "../components/AdminExpoItems";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { isAdmin, logout, getUsername } from "../utils/auth";
 import ExpoDetailView from "../components/ExpoDetailView";
 import CookieBanner from '../components/CookieModal';
 import { ThemeContext } from '../context/themeContext';
+import CreateItemModal from "../components/CreateItemModal"; // IMPORTANTE
 
 export default function AdminItems() {
   const username = getUsername();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); // Para forzar recarga de items
+
   const [hasConsent, setHasConsent] = useState(() => {
     return localStorage.getItem('cookie-consent') === 'true';
   });
@@ -29,12 +30,13 @@ export default function AdminItems() {
   
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
+  const expoActual = "IETI CAR SHOW";
+
   return (
     <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
-      {/* Contenedor principal ajustado para Dark Mode */}
       <div className={`min-h-screen w-full flex flex-col items-center p-4 transition-colors duration-300 ${isDarkMode ? "bg-[#0a0a0a] text-white" : "bg-gray-100 text-gray-900"}`}>
 
-        {/* HEADER DE BIENVENIDA */}
+        {/* HEADER */}
         <div className={`w-full max-w-6xl mb-6 flex justify-between items-center p-6 rounded-2xl shadow-sm ${isDarkMode ? "bg-zinc-900 border border-zinc-800" : "bg-white border border-gray-200"}`}>
           
           <div>
@@ -46,31 +48,47 @@ export default function AdminItems() {
             </p>
           </div>
 
-          {/* BOTÓN DE LOGOUT MEJORADO */}
-          <button
-            onClick={handleLogout}
-            className={`
-              flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider
-              transition-all duration-200 active:scale-95 shadow-md hover:shadow-lg
-              ${isDarkMode 
-                ? "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white" 
-                : "bg-red-50 text-red-600 border border-red-100 hover:bg-red-600 hover:text-white"
-              }
-            `}
-          >
-            {/* Icono simple de salida (opcional) */}
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Sortir
-          </button>
+          <div className="flex gap-3">
+            {/* BOTÓN NUEU ITEM */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
+                isDarkMode 
+                ? "bg-orange-300 text-black hover:bg-orange-400" 
+                : "bg-[#162354] text-white hover:bg-blue-900"
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+              Nou Item
+            </button>
 
+            <button
+              onClick={handleLogout}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
+                isDarkMode 
+                ? "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-50" 
+                : "bg-red-50 text-red-600 border border-red-100 hover:bg-red-600 hover:text-white"
+              }`}
+            >
+              Sortir
+            </button>
+          </div>
         </div>
 
         {/* VISTA DE DETALLES */}
         <div className="w-full max-w-6xl">
-          <ExpoDetailView seleccionado={"IETI CAR SHOW"} isDarkMode={isDarkMode} hasConsent={hasConsent}/>
+          {/* Añadimos refreshKey para que cuando creemos uno, se refresque la lista */}
+          <ExpoDetailView key={refreshKey} seleccionado={expoActual} isDarkMode={isDarkMode} hasConsent={hasConsent}/>
         </div>
+
+        {/* MODAL */}
+        <CreateItemModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)}
+            expoSeleccionada={expoActual}
+            isDarkMode={isDarkMode}
+            onSuccess={() => setRefreshKey(prev => prev + 1)}
+        />
 
         <CookieBanner isDarkMode={isDarkMode} setHasConsent={setHasConsent} />
       </div>

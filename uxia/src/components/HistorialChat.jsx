@@ -5,7 +5,7 @@ export function HistorialChat({ isDarkMode }) {
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-  fetch('https://uxiaweb2.ieti.site/api/get_historial/')
+  fetch(`${config.API_URL}/api/get_historial/`)
     .then(res => {
       if (!res.ok) throw new Error("Error en la red o 404");
       return res.json();

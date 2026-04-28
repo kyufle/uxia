@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // Importación necesaria
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // Importamos Link
 import './App.css';
 
 // Context
@@ -42,6 +42,17 @@ function App() {
             {/* 🟢 HOME */}
             <Route path="/" element={
               <main className="flex-1 flex flex-col items-center w-full p-5 overflow-y-auto min-h-0">
+                
+                {/* BOTÓN TEMPORAL PARA IR AL LOGIN (Para evitar el 404 al escribir la URL) */}
+                <div className="w-full max-w-xs mb-4">
+                    <Link 
+                      to="/admin-login" 
+                      className="text-xs text-gray-400 hover:underline"
+                    >
+                      Accés Administració
+                    </Link>
+                </div>
+
                 {showHistorial ? (
                   <div className="w-full max-w-2xl mx-auto animate-in fade-in duration-500">
                     <button 
@@ -91,14 +102,11 @@ function App() {
               </main>
             } />
 
-            {/* 🔵 ADMIN DASHBOARD */}
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
-
-            {/* 🔴 ADMIN LOGIN */}
             <Route path="/admin-login" element={<AdminLogin />} />
           </Routes>
 
-          {/* Botón Flotante Historial (No visible en cámara) */}
+          {/* Botón Flotante Historial */}
           {!showCamera && (
             <button
               onClick={() => {
@@ -111,12 +119,6 @@ function App() {
               `}
             >
               <ChatBubbleLeftRightIcon className="w-8 h-8" />
-              {newNotification && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 border-2 border-white"></span>
-                </span>
-              )}
             </button>
           )}
 

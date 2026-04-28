@@ -12,7 +12,7 @@ from catalog.models import Expo, Item, Image
 
 
 class Command(BaseCommand):
-    help = "Seeder 2: Genera Expo usando fotos de Internet_coches con usuarios y owner"
+    help = "Seeder 2: Genera 1 Expo usando fotos de Internet_coches con 1 usuario owner"
 
     def handle(self, *args, **kwargs):
         fake = Faker("es_ES")
@@ -33,29 +33,25 @@ class Command(BaseCommand):
         self.stdout.write("Grupo uxiaAdmin verificado")
 
         # --------------------------------------------------
-        # 2. USUARIOS ALEATORIOS
+        # 2. USUARIO ALEATORIO (SOLO 1)
         # --------------------------------------------------
         nombres_base = ["marcos", "lucas", "sergio", "daniel", "adrian", "pablo"]
+        
+        # Seleccionamos UN solo nombre aleatorio
+        nombre_elegido = random.choice(nombres_base)
+        username = f"{nombre_elegido}{random.randint(10, 99)}"
 
-        users = []
+        user, created = User.objects.get_or_create(username=username)
 
-        for name in nombres_base:
-            username = name[:4]  # asegurar >= 4 letras base
-            username = username + str(random.randint(10, 99))  # evitar colisiones
+        if created:
+            password = username + "12345"
+            user.set_password(password)
+            user.save()
+            self.stdout.write(f"Usuario creado: {username} / {password}")
+        else:
+            self.stdout.write(f"Usuario ya existe: {username}")
 
-            user, created = User.objects.get_or_create(username=username)
-
-            if created:
-                password = username + "12345"
-                user.set_password(password)
-                user.save()
-
-                self.stdout.write(f"Usuario creado: {username} / {password}")
-            else:
-                self.stdout.write(f"Usuario ya existe: {username}")
-
-            user.groups.add(group)
-            users.append(user)
+        user.groups.add(group)
 
         # --------------------------------------------------
         # 3. IMÁGENES
@@ -79,10 +75,10 @@ class Command(BaseCommand):
             name=f"{fake.city()} Expo",
             state="DISPONIBLE",
             creationDate=fake.date_this_year(),
-            owner=random.choice(users),
+            owner=user,  # Asignamos el único usuario creado arriba
         )
 
-        self.stdout.write(f"Expo creada: {expo.name} (owner: {expo.owner.username})")
+        self.stdout.write(f"Expo creada: {expo.name} (owner: {user.username})")
 
         # --------------------------------------------------
         # 5. ITEMS

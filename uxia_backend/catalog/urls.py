@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import get_coches, get_expos, get_coches_expo, foto_maria, get_items_expo, login_admin, create_item_admin, edit_item_admin
+from .views import get_coches, get_expos, get_coches_expo, foto_maria, get_items_expo, login_admin, create_item_admin, edit_item_admin, get_my_expos
+
 
 urlpatterns = [
     path('coches/', get_coches, name='get_coches'),
@@ -12,4 +13,6 @@ urlpatterns = [
     path("admin-login/", login_admin),
     path('items/create/', create_item_admin, name='create_item_admin'),
     path('edit-item-admin/', edit_item_admin, name='edit_item_admin'),
+    path("my-expos/", get_my_expos),
+
 ]

@@ -18,6 +18,8 @@ import { HistorialChat } from './components/HistorialChat';
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminItems from './pages/AdminItems';
+import ExpoList from "./pages/AdminExpoList";
+
 
 // Icons
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
@@ -106,6 +108,9 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-items" element={<AdminItems />} />
+
+            <Route path="/my-expos" element={<ExpoList />} />
+
           </Routes>
 
           {/* Botón Flotante Historial */}

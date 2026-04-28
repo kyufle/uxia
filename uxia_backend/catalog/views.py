@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Item, Expo
+from .models import Item, Expo, Image
 from django.contrib.auth import authenticate
 from django.db.models import Q
 
@@ -16,8 +16,35 @@ def get_coches(request):
 
 @api_view(['GET'])
 def get_expos(request):
-    expos = Expo.objects.all().values('id', 'name', 'state', 'creationDate')
-    return Response(list(expos))
+    print("\n--- [BACKEND] Recopilando datos unificados ---")
+    try:
+        # 1. Obtenemos los Items usando tu función lógica
+        items = Item.objects.select_related('expo').prefetch_related('image_set').all()
+        # Llamamos a tu función, pero OJO: necesitamos los datos, no la Response todavía
+        coches_data = devolver_json_coches(items).data 
+
+        # 2. Obtenemos las Exposiciones para el buscador
+        expos_data = []
+        exposiciones = Expo.objects.all()
+        for e in exposiciones:
+            expos_data.append({
+                "id": f"expo-{e.id}",
+                "name": "",        # Vacío para que el carrusel los ignore
+                "description": "", 
+                "expo": e.name,
+                "image": None,
+                "images": []
+            })
+
+        # 3. Combinamos ambas listas
+        resultado_final = coches_data + expos_data
+        
+        print(f"--- [BACKEND] Enviando {len(resultado_final)} objetos ---")
+        return Response(resultado_final)
+
+    except Exception as e:
+        print(f"--- [BACKEND] ERROR: {str(e)} ---")
+        return Response({"error": str(e)}, status=500)
 
 @api_view(['GET'])
 def get_items_expo(request, expo_identifier):

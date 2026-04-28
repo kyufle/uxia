@@ -9,6 +9,9 @@ from .serializers import ItemCardSerializer
 from .models import Item, Expo, Image
 from django.contrib.auth import authenticate
 from django.db.models import Q
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ItemCardSerializer
 
 @api_view(['GET'])
 def get_coches(request):
@@ -282,3 +285,32 @@ def edit_item_admin(request):
     except Exception as e:
         print(f"Error en edit_item_admin: {str(e)}")
         return Response({"error": str(e)}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_expos(request):
+    if not request.user.is_authenticated:
+        return Response({"error": "No autenticat"}, status=401)
+    
+    expos = Expo.objects.filter(owner=request.user).prefetch_related('item_set__image_set')
+    
+    data = []
+    for expo in expos:
+        items_preview = []
+        for item in expo.item_set.all()[:4]:  # primeros 4 items
+            items_preview.append({
+                "id": item.id,
+                "name": item.name,
+                "featured_image": item.featured_image.url if item.featured_image else None,
+            })
+        data.append({
+            "id": expo.id,
+            "name": expo.name,
+            "state": expo.state,
+            "creationDate": expo.creationDate,
+            "items_preview": items_preview,
+        })
+    
+    return Response(data)
+

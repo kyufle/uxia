@@ -228,57 +228,57 @@ def create_item_admin(request):
     
 @api_view(['POST'])
 def edit_item_admin(request):
-    """
-    Edita un Item existente buscando por su ID único.
-    Recibe: id, name, description, expo y featured_image.
-    """
     try:
-        # 1. Buscar el ítem por su ID (enviado desde el frontend)
         item_id = request.data.get('id')
         if not item_id:
-            return Response({"error": "Falta el ID para identificar el item"}, status=400)
+            return Response({"error": "Falta el ID del item"}, status=400)
 
         try:
-            item = Item.objects.get(id=item_id)
+            # Seleccionamos expo para evitar queries extra al cambiar el estado
+            item = Item.objects.select_related('expo').get(id=item_id)
         except Item.DoesNotExist:
-            return Response({"error": f"No se ha encontrado el item con ID {item_id}"}, status=404)
+            return Response({"error": "Item no trobat"}, status=404)
 
-        # 2. Actualizar campos de texto
+        # --- 1. ACTUALIZAR CAMPOS DE TEXTO ---
         if 'name' in request.data:
             item.name = request.data.get('name')
-        
         if 'description' in request.data:
             item.description = request.data.get('description')
 
-        # 3. Actualizar la Expo (si se cambia)
-        expo_val = request.data.get('expo')
-        if expo_val:
-            try:
-                # Intentamos buscar por nombre ya que es lo que suele venir del objeto item.expo
-                expo_obj = Expo.objects.get(name__iexact=expo_val.replace('-', ' '))
-                item.expo = expo_obj
-            except Expo.DoesNotExist:
-                pass # Si no existe, mantenemos la que tenía
+        # --- 2. CAPTURAR ARCHIVOS ---
+        new_featured = request.FILES.get('featured_image') # Del input simple
+        new_gallery = request.FILES.getlist('images')     # Del input multiple
 
-        # 4. Actualizar la Imagen Destacada si hay un archivo nuevo
-        if 'featured_image' in request.FILES:
-            item.featured_image = request.FILES['featured_image']
+        # --- 3. LÓGICA DE ESTADO (EXPO) ---
+        # Si sube CUALQUIER imagen, la expo pasa a ACTUALIZABLE
+        if new_featured or new_gallery:
+            expo_obj = item.expo
+            if expo_obj.state != "ACTUALIZABLE":
+                expo_obj.state = "ACTUALIZABLE"
+                expo_obj.save()
 
-        # Guardar en la base de datos
+        # --- 4. GUARDAR IMAGEN DESTACADA EN ITEM ---
+        if new_featured:
+            item.featured_image = new_featured
+        
         item.save()
 
-        # 5. Opcional: Añadir más imágenes a la galería si se envían
-        if 'images' in request.FILES:
-            extra_images = request.FILES.getlist('images')
-            for img in extra_images:
-                Image.objects.create(path=img, item=item, isPublic=True)
+        # --- 5. GUARDAR IMÁGENES EN MODELO IMAGE (GALERÍA) ---
+        if new_gallery:
+            for img in new_gallery:
+                # Según tus modelos: path, isPublic, item
+                Image.objects.create(
+                    path=img,
+                    item=item,
+                    isPublic=True # Por defecto las ponemos públicas al subir desde admin
+                )
 
         return Response({
-            "message": "Item actualizado correctamente",
+            "message": "Item i galeria actualitzats",
             "id": item.id,
-            "name": item.name
+            "expo_state": item.expo.state
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
-        print(f"Error en edit_item_admin: {str(e)}")
+        print(f"Error edit_item: {e}")
         return Response({"error": str(e)}, status=500)

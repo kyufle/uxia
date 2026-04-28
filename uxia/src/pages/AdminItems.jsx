@@ -52,7 +52,7 @@ export default function AdminItems() {
             {/* BOTÓN NUEU ITEM */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
+              className={`cursor-pointer flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
                 isDarkMode 
                 ? "bg-orange-300 text-black hover:bg-orange-400" 
                 : "bg-[#162354] text-white hover:bg-blue-900"
@@ -64,7 +64,7 @@ export default function AdminItems() {
 
             <button
               onClick={handleLogout}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
+              className={`cursor-pointer flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
                 isDarkMode 
                 ? "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-50" 
                 : "bg-red-50 text-red-600 border border-red-100 hover:bg-red-600 hover:text-white"

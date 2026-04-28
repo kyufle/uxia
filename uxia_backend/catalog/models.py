@@ -1,11 +1,24 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.conf import settings
 
 class Expo(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="expos"
+    )
+
     name = models.CharField(max_length=100)
-    state = models.CharField(max_length=15, 
-        choices=[("INIT","INIT"), ("DISPONIBLE","DISPONIBLE"), 
-        ("ACTUALIZABLE","ACTUALIZABLE")], 
-        default="INIT")
+    state = models.CharField(
+        max_length=15,
+        choices=[
+            ("INIT", "INIT"),
+            ("DISPONIBLE", "DISPONIBLE"),
+            ("ACTUALIZABLE", "ACTUALIZABLE")
+        ],
+        default="INIT"
+    )
     creationDate = models.DateField()
 
     def __str__(self):

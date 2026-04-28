@@ -12,11 +12,18 @@ const CookieModal = ({ isDarkMode, setHasConsent }) => {
 const acceptCookies = () => {
   localStorage.setItem('cookie-consent', 'true');
   setHasConsent(true);
-  location.reload();
-  // window.gtag?.('consent', 'update', {
-  //   'analytics_storage': 'granted'
-  // });
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  };
 
+  if (!getCookie('uxia_user_id')) {
+    const userId = crypto.randomUUID();
+    document.cookie = `uxia_user_id=${userId}; path=/; expires=Fri, 31 Dec 2099 23:59:59 GMT; SameSite=Lax`;
+  }
+
+  location.reload(); 
   setIsVisible(false);
 };
 

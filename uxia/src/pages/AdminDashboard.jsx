@@ -46,7 +46,7 @@ export default function AdminDashboard() {
           onClick={() => navigate("/my-expos")}
           className="w-full flex justify-between items-center p-4  cursor-pointer hover:bg-gray-50 transition"
         >
-          <span className="font-medium">My Expos</span>
+          <span className="font-medium">Les meves exposicions</span>
           <span className="text-gray-400">→</span>
         </button>
 

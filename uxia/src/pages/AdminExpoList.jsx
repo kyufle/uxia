@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { isAdmin, logout } from "../utils/auth";
 import config from "../config";
+import EditExpoModal from "../components/EditExpoModal";
 
 const STATE_LABELS = {
   INIT: "Inicial",
@@ -20,12 +21,14 @@ export default function AdminExpoList() {
   const [expos, setExpos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editingExpo, setEditingExpo] = useState(null);
 
   useEffect(() => {
     if (!isAdmin()) { logout(); navigate("/admin-login"); }
   }, [navigate]);
 
-  useEffect(() => {
+  const fetchExpos = () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     fetch(`${config.API_URL}/api/my-expos/`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -34,6 +37,10 @@ export default function AdminExpoList() {
       .then(setExpos)
       .catch((e) => setError("Error carregant les expos: " + e.message))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchExpos();
   }, []);
 
   return (
@@ -41,7 +48,7 @@ export default function AdminExpoList() {
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate("/admin-dashboard")}
-          className="text-sm text-gray-500 hover:text-gray-800  cursor-pointer flex items-center gap-1 transition"
+          className="text-sm text-gray-500 hover:text-gray-800 cursor-pointer flex items-center gap-1 transition"
         >
           ← Tornar
         </button>
@@ -55,11 +62,13 @@ export default function AdminExpoList() {
         {expos.map((expo) => (
           <div
             key={expo.id}
-            onClick={() => navigate(`/my-expos/${expo.id}`)}
-            className="bg-white border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-gray-400 transition"
+            className="bg-white border border-gray-200 rounded-xl p-4 hover:border-gray-400 transition"
           >
             <div className="flex items-start justify-between gap-3 mb-3">
-              <div>
+              <div
+                className="flex-1 cursor-pointer"
+                onClick={() => navigate(`/my-expos/${expo.id}`)}
+              >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-semibold text-gray-900">{expo.name}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATE_STYLES[expo.state]}`}>
@@ -68,7 +77,21 @@ export default function AdminExpoList() {
                 </div>
                 <p className="text-xs text-gray-400">{expo.creationDate}</p>
               </div>
-              <span className="text-gray-400 text-lg">→</span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setEditingExpo(expo)}
+                  className="text-gray-400 hover:text-blue-600 transition p-1 cursor-pointer rounded"
+                >
+                  <svg className="w-8 h-8" fill="none"  stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 2.828L11.828 15.828a2 2 0 01-1.415.586H9v-2.414a2 2 0 01.586-1.414z"/>
+                  </svg>
+                </button>
+                <span
+                    onClick={() => navigate(`/my-expos/${expo.id}`)}
+                    className="text-gray-400 text-2xl cursor-pointer"
+                    >→</span>
+              </div>
             </div>
 
             {expo.items_preview?.length > 0 && (
@@ -89,6 +112,19 @@ export default function AdminExpoList() {
           </div>
         ))}
       </div>
+
+      {editingExpo && (
+        <EditExpoModal
+          isOpen={!!editingExpo}
+          onClose={() => setEditingExpo(null)}
+          expo={editingExpo}
+          isDarkMode={false}
+          onSuccess={() => {
+            setEditingExpo(null);
+            fetchExpos();
+          }}
+        />
+      )}
     </div>
   );
 }

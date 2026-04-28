@@ -107,10 +107,9 @@ function App() {
 
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/admin-items" element={<AdminItems />} />
-
             <Route path="/my-expos" element={<ExpoList />} />
-
+            <Route path="/my-expos/:expoId" element={<AdminItems />} />
+            
           </Routes>
 
           {/* Botón Flotante Historial */}

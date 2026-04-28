@@ -5,12 +5,14 @@ import ExpoDetailView from "../components/ExpoDetailView";
 import CookieBanner from '../components/CookieModal';
 import { ThemeContext } from '../context/themeContext';
 import CreateItemModal from "../components/CreateItemModal"; // IMPORTANTE
+import { useParams } from "react-router-dom";
 
 export default function AdminItems() {
   const username = getUsername();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); // Para forzar recarga de items
+  const { expoId } = useParams();
 
   const [hasConsent, setHasConsent] = useState(() => {
     return localStorage.getItem('cookie-consent') === 'true';
@@ -30,7 +32,7 @@ export default function AdminItems() {
   
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-  const expoActual = "IETI CAR SHOW";
+  
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
@@ -78,16 +80,16 @@ export default function AdminItems() {
         {/* VISTA DE DETALLES */}
         <div className="w-full max-w-6xl">
           {/* Añadimos refreshKey para que cuando creemos uno, se refresque la lista */}
-          <ExpoDetailView key={refreshKey} seleccionado={expoActual} isDarkMode={isDarkMode} hasConsent={hasConsent}/>
+          <ExpoDetailView key={refreshKey} seleccionado={expoId} isDarkMode={isDarkMode} hasConsent={hasConsent}/>
         </div>
 
         {/* MODAL */}
         <CreateItemModal 
-            isOpen={isModalOpen} 
-            onClose={() => setIsModalOpen(false)}
-            expoSeleccionada={expoActual}
-            isDarkMode={isDarkMode}
-            onSuccess={() => setRefreshKey(prev => prev + 1)}
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)}
+          expoSeleccionada={expoId}
+          isDarkMode={isDarkMode}
+          onSuccess={() => setRefreshKey(prev => prev + 1)}
         />
 
         <CookieBanner isDarkMode={isDarkMode} setHasConsent={setHasConsent} />

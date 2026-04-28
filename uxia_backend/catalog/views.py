@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Item, Expo
+from django.contrib.auth import authenticate
 from django.db.models import Q
 
 @api_view(['GET'])

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 export default function AdminLogin() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
@@ -13,19 +14,7 @@ export default function AdminLogin() {
   // un token válido en localStorage. Si el token es válido y el usuario pertenece al grupo "uxiaAdmin", se redirige automáticamente al dashboard.
   //  Si el token no es válido o el usuario no tiene los permisos necesarios, se limpia el localStorage para evitar problemas de seguridad.
   //FALTA AÑADIR UN TOKENen el back
-  useEffect(() => {
-    let groups = [];
-
-    try {
-      groups = JSON.parse(localStorage.getItem("groups") || "[]");
-    } catch (e) {
-      groups = [];
-    }
-
-    if (groups.includes("uxiaAdmin")) {
-      navigate("/admin-dashboard");
-    }
-  }, [navigate]);
+ 
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -51,15 +40,13 @@ export default function AdminLogin() {
       }
 
       const groups = data.groups || [];
-
+      
+      
       localStorage.setItem("username", data.user);
       localStorage.setItem("groups", JSON.stringify(groups));
-
-      if (groups.includes("uxiaAdmin")) {
-        navigate("/admin-dashboard");
-      } else {
-        setError("No tienes permisos para acceder");
-      }
+      localStorage.setItem("token", data.access);
+      console.log("Token guardado en localStorage:", data.access, "para el usuario", data.user);
+      navigate("/admin-dashboard");
 
     } catch (err) {
       console.error(err);
@@ -97,7 +84,7 @@ export default function AdminLogin() {
         )}
 
         <button
-          className="w-full bg-black text-white p-2 rounded hover:bg-gray-800 transition"
+          className="w-full bg-black text-white p-2 rounded cursor-pointer hover:bg-gray-800 transition"
           type="submit"
         >
           Entrar

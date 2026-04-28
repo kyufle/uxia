@@ -1,30 +1,22 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { isAdmin, logout, getUsername } from "../utils/auth";
 export default function AdminDashboard() {
-  const username = localStorage.getItem("username");
+  const username = getUsername();
   const navigate = useNavigate();
 
-  // Si el usuario no está logueado o no tiene permisos, redirige al login
   useEffect(() => {
-    let groups = [];
-
-    try {
-      groups = JSON.parse(localStorage.getItem("groups") || "[]");
-    } catch (e) {
-      groups = [];
-    }
-
-    if (!groups.includes("uxiaAdmin")) {
-      navigate("/admin-login");
-    }
-  }, [navigate]);
-
-  const logout = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("groups");
+  if (!isAdmin()) {
+    logout();
     navigate("/admin-login");
-  };
+  }
+}, [navigate]);
+
+  //limpiar localStorage y redirigir a login
+  const handleLogout = () => {
+  logout();
+  navigate("/admin-login");
+};
 
   return (
     <div className="flex-1 w-full flex flex-col items-center p-4 bg-gray-100 text-gray-900">
@@ -38,8 +30,8 @@ export default function AdminDashboard() {
         </div>
 
         <button
-          onClick={logout}
-          className="px-3 py-1 rounded text-sm font-medium bg-red-100 text-red-600 hover:bg-red-200 transition"
+          onClick={handleLogout}
+          className="px-3 py-1 rounded text-sm font-medium bg-red-100 text-red-600 cursor-pointer hover:bg-red-200 transition"
         >
           Logout
         </button>
@@ -51,7 +43,7 @@ export default function AdminDashboard() {
 
         <button
           onClick={() => navigate("/my-expos")}
-          className="w-full flex justify-between items-center p-4 hover:bg-gray-50 transition"
+          className="w-full flex justify-between items-center p-4  cursor-pointer hover:bg-gray-50 transition"
         >
           <span className="font-medium">My Expos</span>
           <span className="text-gray-400">→</span>

@@ -42,7 +42,8 @@ function Carrousel({ seleccionado, isDarkMode }) {
                     }
                 }
             } catch (error) {
-                console.error("Error en carrusel:", error.message);
+                console.error("Tipo de error:", e.name); 
+                console.error("Detalle completo:", e);
             }
         }
         chargeData();

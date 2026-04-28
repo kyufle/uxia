@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import config from "../config"
 import { isAdmin, logout, getUsername } from "../utils/auth";
 export default function AdminDashboard() {
   const username = getUsername();

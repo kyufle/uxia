@@ -1,10 +1,12 @@
 import tempfile
 import ollama
 import os
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Item, Expo
+from .models import Item, Expo, Image
+from django.contrib.auth import authenticate
 from django.db.models import Q
 
 @api_view(['GET'])
@@ -14,8 +16,35 @@ def get_coches(request):
 
 @api_view(['GET'])
 def get_expos(request):
-    expos = Expo.objects.all().values('id', 'name', 'state', 'creationDate')
-    return Response(list(expos))
+    print("\n--- [BACKEND] Recopilando datos unificados ---")
+    try:
+        # 1. Obtenemos los Items usando tu función lógica
+        items = Item.objects.select_related('expo').prefetch_related('image_set').all()
+        # Llamamos a tu función, pero OJO: necesitamos los datos, no la Response todavía
+        coches_data = devolver_json_coches(items).data 
+
+        # 2. Obtenemos las Exposiciones para el buscador
+        expos_data = []
+        exposiciones = Expo.objects.all()
+        for e in exposiciones:
+            expos_data.append({
+                "id": f"expo-{e.id}",
+                "name": "",        # Vacío para que el carrusel los ignore
+                "description": "", 
+                "expo": e.name,
+                "image": None,
+                "images": []
+            })
+
+        # 3. Combinamos ambas listas
+        resultado_final = coches_data + expos_data
+        
+        print(f"--- [BACKEND] Enviando {len(resultado_final)} objetos ---")
+        return Response(resultado_final)
+
+    except Exception as e:
+        print(f"--- [BACKEND] ERROR: {str(e)} ---")
+        return Response({"error": str(e)}, status=500)
 
 @api_view(['GET'])
 def get_items_expo(request, expo_identifier):
@@ -100,3 +129,35 @@ def foto_maria(request):
     finally:
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
+
+#api de login comprueba que el usuario esta en el grupo uxiaAdmin + token JWT para autenticacion en el front.
+@api_view(['POST'])
+def login_admin(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    user = authenticate(username=username, password=password)
+
+    if user is None:
+        return Response(
+            {"error": "Credencials invàlides"},
+            status=401
+        )
+
+    # comprovació de grup (permís admin)
+    if not user.groups.filter(name="uxiaAdmin").exists():
+        return Response(
+            {"error": "No pertany al grup uxiaAdmin"},
+            status=403
+        )
+
+    # 🔐 generar tokens JWT
+    refresh = RefreshToken.for_user(user)
+
+    return Response({
+        "ok": True,
+        "user": user.username,
+        "groups": list(user.groups.values_list("name", flat=True)),
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
+    })

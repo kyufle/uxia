@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 class Expo(models.Model):
     name = models.CharField(max_length=100)
@@ -77,3 +78,19 @@ class Tried(models.Model):
     def __str__(self):
         state = "Identificat" if self.isIdentificate else "No identificat"
         return f"Intent del {self.dateAttempt} ({state})"
+
+class Historial(models.Model):
+    cookie = models.BooleanField(default=False)
+    car_photo = models.ImageField(upload_to='prompt_photos/', null=True, blank=True)
+    maria_answers = models.TextField(null=True, blank=True)
+    dia_semana = models.CharField(max_length=15, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            import datetime
+            self.dia_semana = datetime.datetime.now().strftime('%A')
+        super().save(*args, **kwargs)

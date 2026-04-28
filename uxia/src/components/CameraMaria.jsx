@@ -63,44 +63,69 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   }
 };
   
-  const handleFileUpload = async (eventOrFile) => {
-  let file;
+const handleFileUpload = async (eventOrFile) => {
+    let file;
 
-  // Si viene del input (evento)
-  if (eventOrFile.target) {
-    file = eventOrFile.target.files[0];
-  } else {
-    // Si viene de la cámara (File directo)
-    file = eventOrFile;
-  }
+    if (eventOrFile.target) {
+      file = eventOrFile.target.files[0];
+    } else {
+      file = eventOrFile;
+    }
 
-  if (!file) return;
+    if (!file) return;
 
-  setPreview(URL.createObjectURL(file));
-  setLoading(true);
-  setResultado(null);
+    setPreview(URL.createObjectURL(file));
+    setLoading(true);
+    setResultado(null);
 
-  const formData = new FormData();
-  formData.append('image', file);
+    const formData = new FormData();
+    formData.append('image', file);
 
-  try {
-    const response = await fetch('https://uxiaweb2.ieti.site/api/foto/', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      // 1. Petición a la IA para obtener la descripción
+      const response = await fetch('https://uxiaweb2.ieti.site/api/foto/', {
+        method: 'POST',
+        body: formData,
+      });
 
-    if (!response.ok) throw new Error('Error en la resposta del servidor');
+      if (!response.ok) throw new Error('Error en la resposta del servidor');
 
-    const data = await response.json();
-    setResultado(data);
-  } catch (error) {
-    console.error("Error marIA:", error);
-    alert("No s'ha pogut connectar amb l'IA.");
-  } finally {
-    setLoading(false);
-  }
-};
+      const data = await response.json();
+      setResultado(data);
 
+      // 2. Preparar el guardado en el historial
+      // Convertimos el archivo a Base64 para que tu backend lo procese
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = async () => {
+        const base64data = reader.result;
+
+        const historialData = {
+          cookie: true, // O la variable de consentimiento que uses
+          answers: data.descripcio, // Lo que devuelve la IA
+          car_photo: base64data     // La imagen en base64
+        };
+
+        try {
+          await fetch('https://uxiaweb2.ieti.site/api/save_historial/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(historialData),
+          });
+        } catch (err) {
+          console.error("Error guardando historial:", err);
+        }
+      };
+
+    } catch (error) {
+      console.error("Error marIA:", error);
+      alert("No s'ha pogut connectar amb l'IA.");
+    } finally {
+      setLoading(false);
+    }
+  };
   if (!showCamera) {
     return (
       <div className="flex justify-center my-8 px-4 font-sans antialiased animate-in fade-in duration-300">

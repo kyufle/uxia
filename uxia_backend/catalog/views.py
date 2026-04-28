@@ -78,6 +78,7 @@ def foto_maria(request):
             os.remove(temp_path)
 
 
+#api de login comprueba que el usuario esta en el grupo uxiaAdmin, hayq  añadir token mas adelante. acuerdate.
 @api_view(['POST'])
 def login_admin(request):
     username = request.data.get("username")
@@ -85,9 +86,15 @@ def login_admin(request):
 
     user = authenticate(username=username, password=password)
 
-    if user is not None:
-        if user.is_staff:
-            return Response({"ok": True, "user": user.username})
-        return Response({"error": "No es admin"}, status=403)
+    if user is None:
+        return Response({"error": "Credenciales inválidas"}, status=401)
 
-    return Response({"error": "Credenciales inválidas"}, status=401)
+    
+    if not user.groups.filter(name="uxiaAdmin").exists():
+        return Response({"error": "No pertenece al grupo uxiaAdmin"}, status=403)
+
+    return Response({
+    "ok": True,
+    "user": user.username,
+    "groups": list(user.groups.values_list("name", flat=True))
+})

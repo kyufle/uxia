@@ -314,3 +314,24 @@ def get_my_expos(request):
     
     return Response(data)
 
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def edit_expo_admin(request, expo_id):
+    try:
+        expo = Expo.objects.get(id=expo_id, owner=request.user)
+    except Expo.DoesNotExist:
+        return Response({"error": "Expo no trobada"}, status=404)
+
+    if 'name' in request.data:
+        expo.name = request.data.get('name')
+    if 'state' in request.data:
+        expo.state = request.data.get('state')
+
+    expo.save()
+
+    return Response({
+        "ok": True,
+        "id": expo.id,
+        "name": expo.name,
+        "state": expo.state,
+    }, status=200)

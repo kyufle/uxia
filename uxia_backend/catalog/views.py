@@ -8,6 +8,9 @@ from rest_framework import status
 from .models import Item, Expo, Image
 from django.contrib.auth import authenticate
 from django.db.models import Q
+from .models import Historial
+from django.core.files.base import ContentFile
+import base64
 
 @api_view(['GET'])
 def get_coches(request):
@@ -161,3 +164,54 @@ def login_admin(request):
         "access": str(refresh.access_token),
         "refresh": str(refresh),
     })
+
+@api_view(['POST'])
+def save_historial(request):
+    try:
+        user_id = request.data.get('cookie')
+        descripcion = request.data.get('answers')
+        image_data = request.data.get('car_photo')
+
+        if not image_data:
+            return Response({"error": "No hay imagen"}, status=400)
+        try:
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            filename = f"{user_id}_{os.urandom(4).hex()}.{ext}"
+            data = ContentFile(base64.b64decode(imgstr), name=filename)
+        except Exception as e:
+            return Response({"error": f"Error procesando imagen: {str(e)}"}, status=400)
+        nuevo = Historial.objects.create(
+            cookie=True, 
+            car_photo=data,
+            maria_answers=descripcion
+        )
+
+        return Response({"status": "ok"}, status=201)
+    except Exception as e:
+        print(f"ERROR CRITICO EN SAVE: {str(e)}")
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['GET'])
+def get_historial(request):
+    try:
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response([], status=200)
+        todos = Historial.objects.all().order_by('-created_at')
+        resultado = []
+
+        for h in todos:
+            if h.car_photo and os.path.basename(h.car_photo.name).startswith(str(user_id)):
+                resultado.append({
+                    "id": h.id,
+                    "maria_answers": h.maria_answers,
+                    "car_photo": h.car_photo.url,
+                    "fecha_separador": h.created_at.strftime("%d/%m/%Y"),
+                    "hora": h.created_at.strftime("%H:%M")
+                })
+
+        return Response(resultado, status=200)
+    except Exception as e:
+        print(f"ERROR CRITICO EN GET: {str(e)}")
+        return Response({"error": str(e)}, status=500)

@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react'; // 1. Añadimos useRef
 import config from "../config"; 
 
 export function HistorialChat({ isDarkMode }) {
   const [mensajes, setMensajes] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // 2. Referencia para el final de la lista
+  const messagesEndRef = useRef(null);
 
   const getUserIdFromCookie = () => {
     const name = "uxia_user_id=";
@@ -13,6 +16,11 @@ export function HistorialChat({ isDarkMode }) {
       if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
     }
     return "anonim";
+  };
+
+  // Función para hacer scroll
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -31,6 +39,13 @@ export function HistorialChat({ isDarkMode }) {
         setLoading(false);
       });
   }, []);
+
+  // 3. Efecto que se dispara cuando los mensajes cambian o termina de cargar
+  useEffect(() => {
+    if (!loading && mensajes.length > 0) {
+      scrollToBottom();
+    }
+  }, [mensajes, loading]);
 
   if (loading) return (
     <div className={`p-10 text-center font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
@@ -64,14 +79,14 @@ export function HistorialChat({ isDarkMode }) {
                   {msg.hora}
                 </span>
                 <div className="relative mr-2 z-0">
-                  <div className={`relative z-10 p-2 md:p-3 rounded-[1.5rem] md:rounded-[2rem] shadow-xl ${isDarkMode ? "bg-[#f3d7b5]" : "bg-blue-100"} w-48 h-48 md:w-64 md:h-64 flex items-center justify-center`}>
+                  <div className={`relative z-10 p-2 md:p-3 rounded-[1.5rem] md:rounded-[2rem] shadow-xl ${isDarkMode ? "bg-[#f3d7b5]" : "bg-white"} w-48 h-48 md:w-64 md:h-64 flex items-center justify-center`}>
                     <img 
                       src={msg.car_photo.startsWith('http') ? msg.car_photo : `${config.API_URL}${msg.car_photo}`} 
                       alt="Captura" 
                       className="w-full h-full object-cover rounded-[1rem] md:rounded-[1.2rem]"
                     />
                   </div>
-                  <div className={`absolute -bottom-2 right-6 w-8 h-8 md:w-12 md:h-12 rotate-[15deg] ${isDarkMode ? "bg-[#f3d7b5]" : "bg-blue-100"} rounded-bl-3xl shadow-lg -z-10`}></div>
+                  <div className={`absolute -bottom-2 right-6 w-8 h-8 md:w-12 md:h-12 rotate-[15deg] ${isDarkMode ? "bg-[#f3d7b5]" : "bg-white"} rounded-bl-3xl shadow-lg -z-10`}></div>
                 </div>
               </div>
 
@@ -95,6 +110,8 @@ export function HistorialChat({ isDarkMode }) {
             </div>
           );
         })}
+        {/* 4. Div invisible que marca el final para el scroll */}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );

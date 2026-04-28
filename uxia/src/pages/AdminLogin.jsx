@@ -1,51 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 export default function AdminLogin() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
+  // si ya está logueado → dashboard
+  //Este useffect se asegura de que el usuario no tenga que volver a loguearse cada vez que recarga la página, siempre y cuando tenga 
+  // un token válido en localStorage. Si el token es válido y el usuario pertenece al grupo "uxiaAdmin", se redirige automáticamente al dashboard.
+  //  Si el token no es válido o el usuario no tiene los permisos necesarios, se limpia el localStorage para evitar problemas de seguridad.
+  //FALTA AÑADIR UN TOKENen el back
   useEffect(() => {
-    if (localStorage.getItem("admin") === "true") {
+    let groups = [];
+
+    try {
+      groups = JSON.parse(localStorage.getItem("groups") || "[]");
+    } catch (e) {
+      groups = [];
+    }
+
+    if (groups.includes("uxiaAdmin")) {
       navigate("/admin-dashboard");
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setError("");
 
-  try {
-    const response = await fetch("http://localhost:8000/api/admin-login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: user,
-        password: password,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:8000/api/admin-login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user,
+          password: password,
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      alert(data.error || "Credenciales incorrectas");
-      return;
+      if (!response.ok) {
+        setError(data.error || "Credenciales incorrectas");
+        return;
+      }
+
+      const groups = data.groups || [];
+
+      localStorage.setItem("username", data.user);
+      localStorage.setItem("groups", JSON.stringify(groups));
+
+      if (groups.includes("uxiaAdmin")) {
+        navigate("/admin-dashboard");
+      } else {
+        setError("No tienes permisos para acceder");
+      }
+
+    } catch (err) {
+      console.error(err);
+      setError("Error conectando con el servidor");
     }
-
-    // login correcto
-    localStorage.setItem("admin", "true");
-    localStorage.setItem("username", data.user);
-
-    navigate("/admin-dashboard");
-
-  } catch (error) {
-    console.error(error);
-    alert("Error conectando con el servidor");
-  }
-};
+  };
 
   return (
     <div className="flex items-center justify-center flex-1 bg-gray-100">
@@ -70,8 +90,14 @@ export default function AdminLogin() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        {error && (
+          <p className="text-red-500 text-sm text-center bg-red-100 p-2 rounded">
+            {error}
+          </p>
+        )}
+
         <button
-          className="w-full bg-black text-white p-2 rounded"
+          className="w-full bg-black text-white p-2 rounded hover:bg-gray-800 transition"
           type="submit"
         >
           Entrar

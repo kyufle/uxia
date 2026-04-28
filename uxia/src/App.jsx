@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import './App.css';
@@ -17,6 +18,9 @@ import { HistorialChat } from './components/HistorialChat';
 // Pages
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
+import AdminItems from './pages/AdminItems';
+import ExpoList from "./pages/AdminExpoList";
+
 
 // Icons
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
@@ -116,6 +120,9 @@ function App() {
 
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/my-expos" element={<ExpoList />} />
+            <Route path="/my-expos/:expoId" element={<AdminItems />} />
+            
           </Routes>
 
           <CookieBanner isDarkMode={isDarkMode} setHasConsent={setHasConsent} />

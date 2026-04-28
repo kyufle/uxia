@@ -10,7 +10,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     async function lookforData() {
         if (seleccionado && seleccionado.length >= 3) {
             try {
-                const response = await fetch(`${config.API_URL}/api/expo/?search=${seleccionado}`);
+                const response = await fetch(`${config.API_URL}/api/expo/`);
                 const data = await response.json();
                 
                 const query = seleccionado.toLowerCase();

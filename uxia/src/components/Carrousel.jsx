@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import izquierda from '../assets/chevron-izquierdo.png'
 import derecha from '../assets/chevron-derecho.png'
+import config from '../config'
 
 function Carrousel({ seleccionado, isDarkMode }) {
     const [indexPhoto, setIndexPhoto] = useState(0);
@@ -18,7 +19,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
             }
             
             try {
-                const response = await fetch(`https://uxiaweb2.ieti.site/api/expo/?search=${seleccionado}`);
+                const response = await fetch(`${config.API_URL}/api/expo/?search=${seleccionado}`);
                 if (!response.ok) throw new Error(`Status: ${response.status}`);
                 const data = await response.json();
 
@@ -82,7 +83,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
                         <>
                             <div className="w-full max-w-sm mb-4">
                                 <img
-                                    src={`https://uxiaweb2.ieti.site${tempImage || currentCar.image}`}
+                                    src={`${config.API_URL}${tempImage || currentCar.image}`}
                                     alt={currentCar.name}
                                     className="w-full h-56 object-cover rounded-2xl shadow-md transition-all duration-300"
                                 />
@@ -96,14 +97,14 @@ function Carrousel({ seleccionado, isDarkMode }) {
                                     <h4 className={`text-[10px] font-bold ${isDarkMode ? "text-gray-100" : "text-gray-400"} mb-2 uppercase tracking-widest`}>Més fotos</h4>
                                     <div ref={scrollRef} className="flex flex-row gap-2 overflow-x-auto pb-4 no-scrollbar">
                                         <img
-                                            src={`https://uxiaweb2.ieti.site${currentCar.image}`}
+                                            src={`${config.API_URL}${currentCar.image}`}
                                             onClick={() => setTempImage(currentCar.image)}
                                             className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all ${(!tempImage || tempImage === currentCar.image) ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                         />
                                         {currentCar.images.filter(img => img !== currentCar.image).map((imgUrl, idx) => (
                                             <img
                                                 key={idx}
-                                                src={`https://uxiaweb2.ieti.site${imgUrl}`}
+                                                src={`${config.API_URL}${imgUrl}`}
                                                 onClick={() => setTempImage(imgUrl)}
                                                 className={`h-20 w-20 flex-shrink-0 object-cover rounded-lg border-2 transition-all cursor-pointer ${tempImage === imgUrl ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                                             />
@@ -134,7 +135,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
                             {currentCar.name.replaceAll('-', ' ')}
                         </h3>
                         <img
-                            src={`https://uxiaweb2.ieti.site${currentCar.image}`}
+                            src={`${config.API_URL}${currentCar.image}`}
                             alt={currentCar.name}
                             className="w-full h-[275px] object-cover rounded-xl cursor-pointer shadow-lg"
                             onClick={handleInfo}

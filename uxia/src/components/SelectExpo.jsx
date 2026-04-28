@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import config from '../config';
 
 const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     const [open, setOpen] = useState(false);
@@ -9,7 +10,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     async function lookforData() {
         if (seleccionado && seleccionado.length >= 3) {
             try {
-                const response = await fetch(`https://uxiaweb2.ieti.site/api/expo/?search=${seleccionado}`);
+                const response = await fetch(`https://${config.API_URL}/api/expo/?search=${seleccionado}`);
                 const data = await response.json();
                 
                 const query = seleccionado.toLowerCase();

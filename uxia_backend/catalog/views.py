@@ -4,13 +4,33 @@ import os
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Item, Expo, Image
+from .models import Item, Expo
 from django.db.models import Q
+from .serializers import ItemCardSerializer
 
 @api_view(['GET'])
 def get_coches(request):
-    items = Item.objects.all()
+    items = Item.objects.all().select_related('expo').prefetch_related('image_set')
     return devolver_json_coches(items)
+
+@api_view(['GET'])
+def get_expos(request):
+    expos = Expo.objects.all().values('id', 'name', 'state', 'creationDate')
+    return Response(list(expos))
+
+@api_view(['GET'])
+def get_items_expo(request, expo_identifier):
+    items = Item.objects.none()
+
+    if expo_identifier.isdigit():
+        items = Item.objects.filter(expo_id=int(expo_identifier))
+    else:
+        expo_name = expo_identifier.replace('-', ' ').strip()
+        items = Item.objects.filter(expo__name__iexact=expo_name)
+
+    items = items.select_related('expo').prefetch_related('image_set')
+    serializer = ItemCardSerializer(items, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def get_expo(request):
@@ -19,7 +39,7 @@ def get_expo(request):
     if query:
         items = Item.objects.filter(
             Q(expo__name__icontains=query) | 
-            Q(coche__nombre__icontains=query)
+            Q(name__icontains=query)
         ).distinct()
     else:
         items = Item.objects.all()
@@ -33,11 +53,6 @@ def get_coches_expo(request):
         items = Item.objects.filter(expo__name__iexact=query)
     else:
         items = Item.objects.none()
-    return devolver_json_coches(items)
-
-@api_view(['GET'])
-def get_items_expo(request, expo_id):
-    items = Item.objects.filter(expo_id=expo_id)
     return devolver_json_coches(items)
 
 def devolver_json_coches(items):

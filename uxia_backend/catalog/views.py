@@ -177,7 +177,7 @@ def login_admin(request):
 def create_item_admin(request):
     """
     Crea un nuevo Item. 
-    Espera: name, description, expo (ID o nombre), featured_image (archivo)
+    Si se sube una imagen, el estado de la Expo cambia a 'ACTUALIZABLE'.
     """
     try:
         data = request.data
@@ -195,15 +195,23 @@ def create_item_admin(request):
         except Expo.DoesNotExist:
             return Response({"error": "L'exposició no existeix"}, status=404)
 
-        # 2. Crear el Item
+        # 2. Obtener la imagen (si existe)
+        imagen = request.FILES.get('featured_image')
+
+        # 3. Crear el Item (featured_image será None si no se sube nada)
         nuevo_item = Item.objects.create(
             name=data.get('name'),
             description=data.get('description', ''),
             expo=expo_obj,
-            featured_image=request.FILES.get('featured_image') # Soporta archivo físico
+            featured_image=imagen 
         )
 
-        # 3. (Opcional) Si envías varias imágenes para la galería
+        # 4. Lógica de estado de la Expo: si hay imagen, cambia a ACTUALIZABLE
+        if imagen:
+            expo_obj.state = "ACTUALIZABLE"
+            expo_obj.save()
+
+        # 5. Imágenes adicionales de galería
         extra_images = request.FILES.getlist('images')
         for img in extra_images:
             Image.objects.create(path=img, item=nuevo_item, isPublic=True)
@@ -211,7 +219,8 @@ def create_item_admin(request):
         return Response({
             "message": "Item creat amb èxit",
             "id": nuevo_item.id,
-            "name": nuevo_item.name
+            "name": nuevo_item.name,
+            "expo_state": expo_obj.state
         }, status=status.HTTP_201_CREATED)
 
     except Exception as e:

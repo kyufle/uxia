@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_coches, get_expos, get_coches_expo, foto_maria, get_items_expo, login_admin
+from .views import get_coches, get_expos, get_coches_expo, foto_maria, get_items_expo, get_my_expos, login_admin
 
 urlpatterns = [
     path('coches/', get_coches, name='get_coches'),
@@ -10,4 +10,5 @@ urlpatterns = [
     #path('get_historial/', views.get_historial, name='get_historial'),
     path('items_expo/<str:name_expo>/', get_items_expo),
     path("admin-login/", login_admin),
+    path("my-expos/", get_my_expos),
 ]

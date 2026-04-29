@@ -54,7 +54,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
             }`}>
                 <div className="p-6 border-b border-gray-500/10 flex justify-between items-center">
                     <h2 className="text-xl font-bold uppercase tracking-tight">Editar Vehicle</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-red-500 text-2xl transition-colors">&times;</button>
+                    <button onClick={onClose} className="text-gray-400 hover:text-red-500 text-2xl cursor-pointer transition-colors">&times;</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -99,7 +99,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase transition-all ${
+                            className={`flex-1 py-3 rounded-xl font-bold text-xs cursor-pointer uppercase transition-all ${
                                 isDarkMode ? "bg-zinc-800 hover:bg-zinc-700" : "bg-gray-100 hover:bg-gray-200"
                             }`}
                         >
@@ -108,7 +108,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-1 py-3 rounded-xl font-bold text-xs uppercase bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-900/20"
+                            className="flex-1 py-3 rounded-xl font-bold text-xs cursor-pointer uppercase bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-900/20"
                         >
                             {isSubmitting ? "Actualitzant..." : "Guardar Canvis"}
                         </button>

@@ -26,8 +26,10 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
         try {
             const response = await fetch(`${config.API_URL}/api/items/create/`, {
                 method: 'POST',
-                // Importante: No poner headers de Content-Type con FormData
                 body: data,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             });
 
             if (response.ok) {

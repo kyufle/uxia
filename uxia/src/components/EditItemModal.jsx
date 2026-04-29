@@ -29,7 +29,9 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
             const response = await fetch(`${config.API_URL}/api/edit-item-admin/`, {
                 method: 'POST',
                 body: data,
-                // Si usas tokens, añade el header de Authorization aquí
+                headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
             });
 
             if (response.ok) {

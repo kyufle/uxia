@@ -232,6 +232,7 @@ def get_historial(request):
         return Response({"error": str(e)}, status=500)
     
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_item_admin(request):
     """
     Crea un nuevo Item. 
@@ -285,6 +286,7 @@ def create_item_admin(request):
         return Response({"error": str(e)}, status=500)
     
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def edit_item_admin(request):
     """
     Edita un Item existente buscando por su ID único.

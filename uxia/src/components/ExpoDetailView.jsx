@@ -46,11 +46,11 @@ export function ExpoDetailView({ seleccionado, isDarkMode, hasConsent }) {
     if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-900"></div></div>;
 
     return (
-        <div className={`w-full min-h-screen p-6 ${isDarkMode ? "bg-[#121212]" : "bg-gray-50"}`}>
+        <div className={`w-full min-h-screen p-6`}>
             <div className="mb-8 border-b pb-4 flex justify-between items-end">
-                <div>
-                    <h1 className={`text-2xl font-bold uppercase ${isDarkMode ? "text-orange-300" : "text-[#162354]"}`}>
-                        Admin: {seleccionado.replaceAll('-', ' ')}
+                <div> {/* AHORA se muestra el nombre de la exposición */ }
+                    <h1 className={`text-2xl font-bold uppercase ${isDarkMode ? "text-white" : "text-[#162354]"}`}>
+                        {items.length > 0 ? items[0].expo : `Expo ${seleccionado}`}
                     </h1>
                     <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                         Total: {items.length} ítems en llista
@@ -60,7 +60,7 @@ export function ExpoDetailView({ seleccionado, isDarkMode, hasConsent }) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {items.map((item) => (
-                    <div key={item.id} className={`flex flex-col rounded-2xl overflow-hidden shadow-lg ${isDarkMode ? "bg-zinc-900 border-zinc-800" : "bg-white border-gray-200"}`}>
+                    <div key={item.id} className={`flex flex-col rounded-2xl overflow-hidden shadow-lg ${isDarkMode ? "bg-gray-800 border-zinc-800" : "bg-white border-gray-200"}`}>
                         <div className="relative h-48 w-full">
                             <img src={`${config.API_URL}${item.featured_image}`} alt={item.name} className="w-full h-full object-cover" />
                         </div>

@@ -70,36 +70,61 @@ export default function AdminExpoList() {
                 : "bg-white border-gray-200 hover:border-gray-400"
             }`}
           >
-            <div className="flex items-start justify-between gap-3 mb-3">
+            {/* FILA SUPERIOR */}
+            <div className="flex items-center justify-between gap-3 mb-3">
+
+              {/* INFO */}
               <div
-                className="flex-1 cursor-pointer"
+                className="flex-1 cursor-pointer min-w-0"
                 onClick={() => navigate(`/my-expos/${expo.id}`)}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold">{expo.name}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATE_STYLES[expo.state]}`}>
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="font-semibold truncate">{expo.name}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATE_STYLES[expo.state]}`}>
                     {STATE_LABELS[expo.state]}
                   </span>
                 </div>
                 <p className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>{expo.creationDate}</p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setEditingExpo(expo)}
-                  className={`transition p-1 cursor-pointer rounded ${isDarkMode ? "text-gray-500 hover:text-blue-400" : "text-gray-400 hover:text-blue-600"}`}
-                >
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 2.828L11.828 15.828a2 2 0 01-1.415.586H9v-2.414a2 2 0 01.586-1.414z"/>
-                  </svg>
-                </button>
-                <span
-                  onClick={() => navigate(`/my-expos/${expo.id}`)}
-                  className={`text-2xl cursor-pointer ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}
-                >→</span>
+              {/* BOTONES PILL, divisor guapisimo moderno */}
+              <div className="shrink-0">
+                <div className={`flex items-center rounded-2xl overflow-hidden border ${
+                  isDarkMode
+                    ? "border-gray-600 bg-gray-700/50 backdrop-blur-sm"
+                    : "border-gray-200 bg-gray-50"
+                }`}>
+                  <button
+                    onClick={() => setEditingExpo(expo)}
+                    className={`flex items-center justify-center px-4 py-3 transition-all active:scale-95 cursor-pointer ${
+                      isDarkMode
+                        ? "text-blue-400 hover:bg-blue-500/20"
+                        : "text-orange-500 hover:bg-orange-50"
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 2.828L11.828 15.828a2 2 0 01-1.415.586H9v-2.414a2 2 0 01.586-1.414z"/>
+                    </svg>
+                  </button>
+
+                  <div className={`w-px h-6 ${isDarkMode ? "bg-gray-600" : "bg-gray-200"}`} />
+
+                  <button
+                    onClick={() => navigate(`/my-expos/${expo.id}`)}
+                    className={`flex items-center justify-center px-4 py-3 font-bold transition-all active:scale-95 cursor-pointer gap-1.5 ${
+                      isDarkMode
+                        ? "text-orange-400 hover:bg-orange-400/10"
+                        : "text-[#162354] hover:bg-blue-50"
+                    }`}
+                  >
+                    <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">Veure</span>
+                    <span>→</span>
+                  </button>
+                </div>
               </div>
             </div>
 
+            {/* PREVIEW ITEMS */}
             {expo.items_preview?.length > 0 && (
               <div className="flex gap-3 flex-wrap">
                 {expo.items_preview.map((item) => (

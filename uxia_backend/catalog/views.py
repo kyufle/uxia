@@ -213,7 +213,7 @@ def get_historial(request):
         user_id = request.query_params.get('user_id')
         if not user_id:
             return Response([], status=200)
-        todos = Historial.objects.all().order_by('-created_at')
+        todos = Historial.objects.all().order_by('created_at')
         resultado = []
 
         for h in todos:

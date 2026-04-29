@@ -60,7 +60,7 @@ export function HistorialChat({ isDarkMode }) {
   );
 
   return (
-    <div className={`w-full min-h-screen font-sans antialiased p-4 md:p-6 ${isDarkMode ? "bg-[#0b1120]" : "bg-slate-50"}`}>
+    <div className={`w-full font-sans antialiased p-4 md:p-6 ${isDarkMode ? "bg-[#0b1120]" : "bg-slate-50"}`}>
       <div className="max-w-xl mx-auto">
         {mensajes.map((msg, index) => {
           const showDate = index === 0 || msg.fecha_separador !== mensajes[index - 1].fecha_separador;
@@ -105,7 +105,7 @@ export function HistorialChat({ isDarkMode }) {
               </div>
 
               {index === mensajes.length - 1 && (
-                <div className={`w-full border-t-2 mt-4 mb-20 ${isDarkMode ? "border-white/20" : "border-slate-900 opacity-10"}`}></div>
+                <div className={`w-full border-t-2 mt-4 mb-2 ${isDarkMode ? "border-white/20" : "border-slate-900 opacity-10"}`}></div>
               )}
             </div>
           );

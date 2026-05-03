@@ -11,6 +11,7 @@ export default function AdminLogin() {
   const { isDarkMode } = useContext(ThemeContext);
 
 
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -34,7 +35,7 @@ export default function AdminLogin() {
       localStorage.setItem("username", data.user);
       localStorage.setItem("groups", JSON.stringify(groups));
       localStorage.setItem("token", data.access);
-      navigate("/admin-dashboard");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setError("Error conectando con el servidor");

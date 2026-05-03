@@ -45,10 +45,7 @@ function App() {
               <main className="flex-1 flex flex-col items-center w-full p-5 overflow-y-auto min-h-0">
                 
                 <div className="w-full max-w-xs mb-4">
-                    <Link 
-                      to="/admin-login" 
-                      className="text-xs text-gray-400 hover:underline"
-                    >
+                    <Link to="/dashboard/login" className="text-xs text-gray-400 hover:underline">
                       Accés Administració
                     </Link>
                 </div>
@@ -118,10 +115,10 @@ function App() {
               </main>
             } />
 
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/my-expos" element={<ExpoList />} />
-            <Route path="/my-expos/:expoId" element={<AdminItems />} />
+           <Route path="/dashboard" element={<AdminDashboard />} />
+           <Route path="/dashboard/login" element={<AdminLogin />} />
+           <Route path="/dashboard/expos" element={<ExpoList />} />
+           <Route path="/dashboard/expos/:expoId" element={<AdminItems />} />
             
           </Routes>
 

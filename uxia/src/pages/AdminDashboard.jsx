@@ -12,13 +12,13 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!isAdmin()) {
       logout();
-      navigate("/admin-login");
+      navigate("/dashboard/login");
     }
   }, [navigate]);
 
   const handleLogout = () => {
     logout();
-    navigate("/admin-login");
+    navigate("/dashboard/login");
   };
 
   return (
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
       {/* OPCIONES */}
       <div className={`w-full max-w-md rounded-xl shadow divide-y ${isDarkMode ? "bg-gray-800 divide-gray-700" : "bg-white divide-gray-200"}`}>
         <button
-          onClick={() => navigate("/my-expos")}
+          onClick={() => navigate("/dashboard/expos")}
           className={`w-full flex justify-between items-center p-4 cursor-pointer transition ${isDarkMode ? "hover:bg-gray-700 text-white" : "hover:bg-gray-50 text-gray-900"}`}
         >
           <span className="font-medium">Les meves exposicions</span>

@@ -26,7 +26,7 @@ export default function AdminExpoList() {
   const { isDarkMode } = useContext(ThemeContext);
 
   useEffect(() => {
-    if (!isAdmin()) { logout(); navigate("/admin-login"); }
+    if (!isAdmin()) { logout(); navigate("/dashboard/login"); }
   }, [navigate]);
 
   const fetchExpos = () => {
@@ -49,7 +49,7 @@ export default function AdminExpoList() {
     <div className={`flex-1 w-full max-w-6xl mx-auto p-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
       <div className="flex items-center gap-3 mb-6">
         <button
-          onClick={() => navigate("/admin-dashboard")}
+          onClick={() => navigate("/dashboard")}
           className={`text-sm cursor-pointer flex items-center gap-1 transition ${isDarkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-800"}`}
         >
           ← Tornar
@@ -70,13 +70,10 @@ export default function AdminExpoList() {
                 : "bg-white border-gray-200 hover:border-gray-400"
             }`}
           >
-            {/* FILA SUPERIOR */}
             <div className="flex items-center justify-between gap-3 mb-3">
-
-              {/* INFO */}
               <div
                 className="flex-1 cursor-pointer min-w-0"
-                onClick={() => navigate(`/my-expos/${expo.id}`)}
+                onClick={() => navigate(`/dashboard/expos/${expo.id}`)}
               >
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="font-semibold truncate">{expo.name}</span>
@@ -87,7 +84,6 @@ export default function AdminExpoList() {
                 <p className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>{expo.creationDate}</p>
               </div>
 
-              {/* BOTONES PILL, divisor guapisimo moderno */}
               <div className="shrink-0">
                 <div className={`flex items-center rounded-2xl overflow-hidden border ${
                   isDarkMode
@@ -110,7 +106,7 @@ export default function AdminExpoList() {
                   <div className={`w-px h-6 ${isDarkMode ? "bg-gray-600" : "bg-gray-200"}`} />
 
                   <button
-                    onClick={() => navigate(`/my-expos/${expo.id}`)}
+                    onClick={() => navigate(`/dashboard/expos/${expo.id}`)}
                     className={`flex items-center justify-center px-4 py-3 font-bold transition-all active:scale-95 cursor-pointer gap-1.5 ${
                       isDarkMode
                         ? "text-orange-400 hover:bg-orange-400/10"
@@ -124,7 +120,6 @@ export default function AdminExpoList() {
               </div>
             </div>
 
-            {/* PREVIEW ITEMS */}
             {expo.items_preview?.length > 0 && (
               <div className="flex gap-3 flex-wrap">
                 {expo.items_preview.map((item) => (

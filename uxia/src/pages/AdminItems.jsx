@@ -21,13 +21,13 @@ export default function AdminItems() {
   useEffect(() => {
     if (!isAdmin()) {
       logout();
-      navigate("/admin-login");
+      navigate("/dashboard/login");
     }
   }, [navigate]);
 
   const handleLogout = () => {
     logout();
-    navigate("/admin-login");
+    navigate("/dashboard/login");
   };
 
   return (

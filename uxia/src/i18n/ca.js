@@ -17,6 +17,11 @@ const translation = {
             title: "Busca exposicions o cotxes...",
             exhibitions: "Exposicions",
             carsItems: "Cotxes/Items"
+        },
+        cookies:{
+            title: "La teva privacitat ens importa",
+            text: "Utilitzem cookies per a millorar la teva experiència.",
+            button: "Aceptar totes"
         }
     },
     dashboard:{

@@ -17,6 +17,11 @@ const translation = {
             title: "Search for exhibitions or cars...",
             exhibitions: "Exhibitions",
             carsItems: "Cars/Items"
+        },
+        cookies:{
+            title: "Your privacy matters",
+            text: "We use cookies to improve your experience.",
+            button: "Accept all"
         }
     },
     dashboard:{

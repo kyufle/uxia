@@ -4,12 +4,7 @@ import { isAdmin, logout } from "../utils/auth";
 import config from "../config";
 import EditExpoModal from "../components/EditExpoModal";
 import { ThemeContext } from "../context/themeContext";
-
-const STATE_LABELS = {
-  INIT: "Inicial",
-  DISPONIBLE: "Disponible",
-  ACTUALIZABLE: "Actualitzable",
-};
+import { useTranslation } from "react-i18next";
 
 const STATE_STYLES = {
   INIT: "bg-blue-50 text-blue-800",
@@ -18,6 +13,12 @@ const STATE_STYLES = {
 };
 
 export default function AdminExpoList() {
+  const {t} = useTranslation();
+  const STATE_LABELS = {
+  INIT: t('dashboard.landingPage.init'),
+  DISPONIBLE: t('dashboard.landingPage.available'),
+  ACTUALIZABLE: t('dashboard.landingPage.updatable'),
+};
   const navigate = useNavigate();
   const [expos, setExpos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,12 +53,12 @@ export default function AdminExpoList() {
           onClick={() => navigate("/dashboard")}
           className={`text-sm cursor-pointer flex items-center gap-1 transition ${isDarkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-800"}`}
         >
-          ← Tornar
+          ← {t('dashboard.landingPage.back')}
         </button>
-        <h1 className="text-xl font-bold">Les meves expos</h1>
+        <h1 className="text-xl font-bold">{t('dashboard.landingPage.title')}</h1>
       </div>
 
-      {loading && <p className="text-gray-400 text-center py-10">Carregant...</p>}
+      {loading && <p className="text-gray-400 text-center py-10">{t('dashboard.landingPage.loading')}</p>}
       {error && <p className="text-red-500 text-center py-10">{error}</p>}
 
       <div className="flex flex-col gap-4">
@@ -113,7 +114,7 @@ export default function AdminExpoList() {
                         : "text-[#162354] hover:bg-blue-50"
                     }`}
                   >
-                    <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">Veure</span>
+                    <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">{t('dashboard.landingPage.see')}</span>
                     <span>→</span>
                   </button>
                 </div>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import config from '../config';
+import { useTranslation } from 'react-i18next';
 
 export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
+    const {t} = useTranslation();
     const [formData, setFormData] = useState({
         name: item.name,
         description: item.description,
@@ -121,7 +123,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
                 onClose();
             } else {
                 const errorData = await response.json();
-                alert("Error: " + (errorData.error || "No s'ha pogut guardar"));
+                alert("Error: " + (errorData.error || t('dashboard.expo.edit.dontSave')));
             }
         } catch (error) {
             console.error("Error:", error);
@@ -140,7 +142,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
             }`}>
                 {/* HEADER */}
                 <div className="p-6 border-b border-gray-500/10 flex justify-between items-center shrink-0">
-                    <h2 className="text-xl font-bold uppercase tracking-tight">Editar Vehicle</h2>
+                    <h2 className="text-xl font-bold uppercase tracking-tight">{t('dashboard.expo.edit.title')}</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-red-500 text-2xl cursor-pointer transition-colors">&times;</button>
                 </div>
 
@@ -150,7 +152,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
 
                         {/* NOM */}
                         <div>
-                            <label className="block text-[10px] font-bold uppercase mb-1 opacity-60">Nom del vehicle</label>
+                            <label className="block text-[10px] font-bold uppercase mb-1 opacity-60">{t('dashboard.expo.edit.name')}</label>
                             <input
                                 type="text"
                                 value={formData.name}
@@ -164,7 +166,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
 
                         {/* DESCRIPCIÓ */}
                         <div>
-                            <label className="block text-[10px] font-bold uppercase mb-1 opacity-60">Descripció técnica</label>
+                            <label className="block text-[10px] font-bold uppercase mb-1 opacity-60">{t('dashboard.expo.edit.description')}</label>
                             <textarea
                                 rows="4"
                                 value={formData.description}
@@ -178,7 +180,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
                         {/* IMATGES */}
                         <div>
                             <label className="block text-[10px] font-bold uppercase mb-2 opacity-60">
-                                Imatges ({totalImages}) — toca per marcar com a destacada ⭐
+                                {t('dashboard.expo.edit.images')} ({totalImages}) — {t('dashboard.expo.edit.touch')}⭐
                             </label>
 
                             {/* GRID IMATGES EXISTENTS + NOVES */}
@@ -248,7 +250,7 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
                                     onChange={handleImageChange}
                                     className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
                                 />
-                                <p className="text-[10px] text-gray-400 mt-1">Afegir més imatges</p>
+                                <p className="text-[10px] text-gray-400 mt-1">{t('dashboard.expo.edit.addImages')}</p>
                             </div>
                         </div>
 
@@ -261,14 +263,14 @@ export function EditItemModal({ item, isDarkMode, onClose, onUpdateSuccess }) {
                                     isDarkMode ? "bg-zinc-800 hover:bg-zinc-700" : "bg-gray-100 hover:bg-gray-200"
                                 }`}
                             >
-                                Cancel·lar
+                                {t('dashboard.expo.edit.cancel')}
                             </button>
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
                                 className="flex-1 py-3 rounded-xl font-bold text-xs cursor-pointer uppercase bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-900/20"
                             >
-                                {isSubmitting ? "Actualitzant..." : "Guardar Canvis"}
+                                {isSubmitting ? t('dashboard.expo.edit.updating') : t('dashboard.expo.edit.saveChanges')}
                             </button>
                         </div>
                     </form>

@@ -6,6 +6,7 @@ import CookieBanner from '../components/CookieModal';
 import { ThemeContext } from '../context/themeContext';
 import CreateItemModal from "../components/CreateItemModal";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function AdminItems() {
   const username = getUsername();
@@ -17,6 +18,8 @@ export default function AdminItems() {
   const [hasConsent, setHasConsent] = useState(() => {
     return localStorage.getItem('cookie-consent') === 'true';
   });
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!isAdmin()) {
@@ -35,7 +38,7 @@ export default function AdminItems() {
       <div className={`w-full max-w-6xl mb-6 flex justify-between items-center p-6 rounded-2xl shadow-sm ${isDarkMode ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-200"}`}>
         <div>
           <h1 className={`text-2xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#162354]"}`}>
-            Benvingut,
+            {t('dashboard.landingPage.welcome')},
           </h1>
           <p className={`text-sm font-medium ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
             {username || "Administrador"}
@@ -53,8 +56,8 @@ export default function AdminItems() {
             <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
             </svg>
-            <span className="hidden sm:inline">Nou Item</span>
-            <span className="sm:hidden">Nou</span>
+            <span className="hidden sm:inline">{t('dashboard.expo.newItem')}</span>
+            <span className="sm:hidden">{t('dashboard.expo.new')}</span>
           </button>
 
           <button //en vez d hacer logout nos manda a la pantalla anterior
@@ -65,7 +68,7 @@ export default function AdminItems() {
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            <span className="hidden sm:inline">← Tornar</span>
+            <span className="hidden sm:inline">← {t('dashboard.expo.back')}</span>
             <span className="sm:hidden">←</span>
           </button>
         </div>

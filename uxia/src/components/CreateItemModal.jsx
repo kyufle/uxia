@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import config from '../config';
+import { useTranslation } from 'react-i18next';
 
 export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isDarkMode, onSuccess }) {
+    const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
     const [formData, setFormData] = useState({
@@ -85,7 +87,7 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
                 
                 {/* HEADER */}
                 <div className="p-6 border-b border-gray-500/20 flex justify-between items-center shrink-0">
-                    <h2 className="text-xl font-black uppercase tracking-tight">Nou Item</h2>
+                    <h2 className="text-xl font-black uppercase tracking-tight">{t('dashboard.expo.newItem')}</h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-red-500 transition-colors cursor-pointer">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

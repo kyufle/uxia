@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import config from '../config';
+import { useTranslation } from 'react-i18next';
 
 const STATE_OPTIONS = [
     { value: 'INIT', label: 'Inicial' },
@@ -8,6 +9,7 @@ const STATE_OPTIONS = [
 ];
 
 export default function EditExpoModal({ isOpen, onClose, expo, isDarkMode, onSuccess }) {
+    const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: expo?.name || '',

@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import config from "../config";
 import { isAdmin, logout, getUsername } from "../utils/auth";
 import { ThemeContext } from "../context/themeContext";
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
   const username = getUsername();
   const navigate = useNavigate();
   const { isDarkMode } = useContext(ThemeContext);
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!isAdmin()) {
@@ -26,7 +28,7 @@ export default function AdminDashboard() {
       {/* HEADER */}
       <div className="w-full max-w-md mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Benvingut,</h1>
+          <h1 className="text-2xl font-bold">{t('dashboard.landingPage.welcome')},</h1>
           <p className={isDarkMode ? "text-gray-400" : "text-gray-600"}>{username || "Admin"}</p>
         </div>
         <button
@@ -46,7 +48,7 @@ export default function AdminDashboard() {
           onClick={() => navigate("/dashboard/expos")}
           className={`w-full flex justify-between items-center p-4 cursor-pointer transition ${isDarkMode ? "hover:bg-gray-700 text-white" : "hover:bg-gray-50 text-gray-900"}`}
         >
-          <span className="font-medium">Les meves exposicions</span>
+          <span className="font-medium">{t('dashboard.landingPage.title')}</span>
           <span className={isDarkMode ? "text-gray-400" : "text-gray-400"}>→</span>
         </button>
       </div>

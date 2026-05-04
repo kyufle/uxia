@@ -25,6 +25,9 @@ import ExpoList from "./pages/AdminExpoList";
 // Icons
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 
+import { useTranslation } from 'react-i18next';
+import './i18n'
+
 function App() {
   const [seleccionado, setSeleccionado] = useState("");
   const [showCamera, setShowCamera] = useState(false);
@@ -34,6 +37,8 @@ function App() {
   const [hasConsent, setHasConsent] = useState(() => {
     return localStorage.getItem('cookie-consent') === 'true';
   });
+
+  const {t} = useTranslation();
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
@@ -46,7 +51,7 @@ function App() {
                 
                 <div className="w-full max-w-xs mb-4">
                     <Link to="/dashboard/login" className="text-xs text-gray-400 hover:underline">
-                      Accés Administració
+                      {t('landingPage.administrationAccess')}
                     </Link>
                 </div>
 
@@ -56,7 +61,7 @@ function App() {
                       onClick={() => setShowHistorial(false)}
                       className={`mb-6 flex items-center gap-2 font-bold hover:opacity-70 transition-opacity ${isDarkMode ? "text-white" : "text-gray-900"}`}
                     >
-                      ← Tornar a l'inici
+                      ← {t('landingPage.history.back')}
                     </button>
                     <HistorialChat isDarkMode={isDarkMode} />
                   </div>
@@ -71,7 +76,7 @@ function App() {
 
                           <div className="my-8 p-3 w-full max-w-xs md:max-w-md xl:max-w-xl">
                             {!seleccionado
-                              ? <p className='text-center text-gray-500'> No has seleccionat cap exposició</p>
+                              ? <p className='text-center text-gray-500'> {t('landingPage.notSelected')}</p>
                               : <Carrousel seleccionado={seleccionado} isDarkMode={isDarkMode} />
                             }
                           </div>
@@ -80,10 +85,10 @@ function App() {
 
                       <div className={`w-full max-w-xs md:max-w-md xl:max-w-xl mx-auto p-4 rounded-xl shadow-sm border ${ isDarkMode ? "bg-gray-950 border-gray-800" : "bg-white border-gray-100"}`}>
                         <h2 className={`text-xl md:text-2xl font-semibold ${isDarkMode ? "text-gray-200" : "text-gray-800"} leading-tight`}>
-                          Quin cotxe tens davant?
+                          {t('landingPage.maria.title')}
                         </h2>
                         <p className="mt-2 mb-6 text-sm md:text-base text-gray-500 font-light">
-                          La nostra intel·ligència artificial l'identificarà a l'instant amb només una foto.
+                          {t('landingPage.maria.text')}
                         </p>
                         <div className="w-full">
                           <CameraMaria 

@@ -50,7 +50,7 @@ export function HistorialChat({ isDarkMode }) {
 
   if (loading) return (
     <div className={`p-10 text-center font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-      Carregant historial...
+      {t('landingPage.history.charge')}
     </div>
   );
   

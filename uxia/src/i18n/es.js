@@ -11,12 +11,13 @@ const translation = {
         },
         history:{
             notappointment : "Aún no tienes ninguna consulta.",
-            back: "Volver al inicio"
+            back: "Volver al inicio",
+            charge: "Cargando historial..."
         },
         search:{
             title: "Busca exposiciones o coches...",
             exhibitions: "Exposiciones",
-            carsItems: "Coches/Items"
+            carsItems: "Coches/Ítems"
         },
         cookies:{
             title: "Tu privacidad nos importa",

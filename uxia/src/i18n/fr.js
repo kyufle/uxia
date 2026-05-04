@@ -4,17 +4,18 @@ const translation = {
         notSelected: "Aucune exposition sélectionnée",
         typing: "Rechercher une exposition ou une voiture...",
         maria:{
-            title: "Quelle voiture avez-vous devant vous ?",
+            title: "Quelle voiture est devant vous ?",
             text: "Notre intelligence artificielle l'identifiera instantanément avec une simple photo.",
             button: "Ouvrir",
             buttonMaria: "Ouvrir la caméra"
         },
         history:{
-            notappointment : "Vous n'avez pas encore de consultation.",
-            back: "Retour à l'accueil"
+            notappointment : "Vous n'avez pas encore de consultations.",
+            back: "Retour à l'accueil",
+            charge: "Chargement de l'historique..."
         },
         search:{
-            title: "Rechercher des expositions ou des voitures...",
+            title: "Rechercher des expositions ou voitures...",
             exhibitions: "Expositions",
             carsItems: "Voitures/Articles"
         },
@@ -44,7 +45,7 @@ const translation = {
             newItem: "Nouvel article",
             back: "retour",
             total: "Total",
-            list: "articles en liste",
+            list: "articles dans la liste",
             editButton: "modifier",
             new: "Nouveau",
             edit:{

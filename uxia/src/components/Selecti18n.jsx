@@ -18,7 +18,7 @@ const Selecti18n = ({ isDarkMode }) => {
   return (
     <div className="ml-auto relative flex items-center">
       <select 
-        value={i18n.language} 
+        value={i18n.language.substring(0, 2)}
         onChange={changeLanguage}
         className={`
           appearance-none cursor-pointer pr-8 pl-3 py-1.5 rounded-md border transition-all duration-300 outline-none font-medium

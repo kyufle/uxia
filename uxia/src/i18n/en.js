@@ -5,16 +5,17 @@ const translation = {
         typing: "Search for an exhibition or a car...",
         maria:{
             title: "Which car is in front of you?",
-            text: "Our artificial intelligence will identify it instantly with just a photo.",
+            text: "Our AI will identify it instantly with just one photo.",
             button: "Open",
             buttonMaria: "Open camera"
         },
         history:{
-            notappointment : "You don't have any inquiries yet.",
-            back: "Back to home"
+            notappointment : "You don't have any queries yet.",
+            back: "Back to home",
+            charge: "Loading history..."
         },
         search:{
-            title: "Search for exhibitions or cars...",
+            title: "Search exhibitions or cars...",
             exhibitions: "Exhibitions",
             carsItems: "Cars/Items"
         },
@@ -32,7 +33,7 @@ const translation = {
         },
         landingPage:{
             welcome: "Welcome",
-            title: "My Exhibitions",
+            title: "My exhibitions",
             see: "View",
             back: "Back",
             loading: "Loading...",

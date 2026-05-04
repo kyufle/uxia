@@ -11,7 +11,8 @@ const translation = {
         },
         history:{
             notappointment : "Encara no tens cap consulta.",
-            back: "Tornar a l'inici"
+            back: "Tornar a l'inici",
+            charge: "Carregant historial..."
         },
         search:{
             title: "Busca exposicions o cotxes...",

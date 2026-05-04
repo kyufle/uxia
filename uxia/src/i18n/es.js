@@ -1,58 +1,65 @@
 const translation = {
     landingPage:{
-        administrationAccess: "Accés Administració",
-        notSelected: "No has seleccionat cap exposició",
-        typing: "Busca una exposició o un cotxe...",
+        administrationAccess: "Acceso Administración",
+        notSelected: "No has seleccionado ninguna exposición",
+        typing: "Busca una exposición o un coche...",
         maria:{
-            title: "Quin cotxe tens davant?",
-            text: "La nostra intel·ligència artificial l'identificarà a l'instant amb només una foto.",
-            button: "Obrir",
-            buttonMaria: "Obrir càmera"
+            title: "¿Qué coche tienes delante?",
+            text: "Nuestra inteligencia artificial lo identificará al instante con solo una foto.",
+            button: "Abrir",
+            buttonMaria: "Abrir cámara"
         },
         history:{
-            notappointment : "Encara no tens cap consulta.",
-            back: "Tornar a l'inici"
+            notappointment : "Aún no tienes ninguna consulta.",
+            back: "Volver al inicio"
         },
         search:{
-            title: "Busca exposicions o cotxes...",
-            exhibitions: "Exposicions",
-            carsItems: "Cotxes/Items"
+            title: "Busca exposiciones o coches...",
+            exhibitions: "Exposiciones",
+            carsItems: "Coches/Items"
         }
     },
     dashboard:{
         login:{
-            user: "Usuari",
-            password: "Contrasenya",
+            user: "Usuario",
+            password: "Contraseña",
             enter: "Entrar"
         },
         landingPage:{
-            welcome: "Benvingut",
-            title: "Les meves exposicions",
-            see: "Veure",
-            back: "Tornar",
-            loading: "Carregant...",
+            welcome: "Bienvenido",
+            title: "Mis exposiciones",
+            see: "Ver",
+            back: "Volver",
+            loading: "Cargando...",
             init: "Inicial",
             available: "Disponible",
-            updatable: "Actualitzable"
+            updatable: "Actualizable"
         },
         expo:{
-            newItem: "Nou item",
-            back: "tornar",
+            newItem: "Nuevo ítem",
+            back: "volver",
             total: "Total",
-            list: "ítems en llista",
+            list: "ítems en lista",
             editButton: "editar",
-            new: "Nou",
+            new: "Nuevo",
             edit:{
-                title: "Editar vehicle",
-                name: "Nom del vehicle",
-                description: "Descripció técnica",
-                images: "Imatges",
-                touch: "Toca per marcar com a destacada",
-                chooseFiles: "Tria els fitxers",
-                notChooseFiles: "No s'ha triat cap fitxer",
-                addImages: "Afegir més imatges",
-                cancel: "Cancel·lar",
-                saveChanges: "Guardar canvis"
+                title: "Editar vehículo",
+                name: "Nombre del vehículo",
+                description: "Descripción técnica",
+                images: "Imágenes",
+                touch: "toca para marcar como destacada",
+                chooseFiles: "Elige los archivos",
+                notChooseFiles: "No se ha elegido ningún archivo",
+                addImages: "Añadir más imágenes",
+                cancel: "Cancelar",
+                saveChanges: "Guardar cambios",
+                updating: "Actualizando...",
+                dontSave: "No se ha podido guardar",
+                select: "seleccionadas",
+                text: "Puedes seleccionar múltiples imágenes. Toca una para marcarla como destacada.",
+                createItem: "Crear Ítem",
+                send: "Enviando...",
+                vehicleDetalls: "Detalles del vehículo..."
             }
         }
     }

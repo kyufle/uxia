@@ -101,7 +101,7 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
                         
                         {/* NOM */}
                         <div>
-                            <label className="block text-xs font-bold uppercase mb-1 opacity-60">Nom del Vehicle</label>
+                            <label className="block text-xs font-bold uppercase mb-1 opacity-60">{t('dashboard.expo.edit.name')}</label>
                             <input
                                 required
                                 type="text"
@@ -114,20 +114,20 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
 
                         {/* DESCRIPCIÓ */}
                         <div>
-                            <label className="block text-xs font-bold uppercase mb-1 opacity-60">Descripció</label>
+                            <label className="block text-xs font-bold uppercase mb-1 opacity-60">{t('dashboard.expo.edit.description')}</label>
                             <textarea
                                 rows="3"
                                 className={`w-full p-3 rounded-xl border focus:ring-2 focus:outline-none ${isDarkMode ? "bg-zinc-800 border-zinc-700 focus:ring-orange-300" : "bg-gray-50 border-gray-200 focus:ring-blue-500"}`}
                                 value={formData.description}
                                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                placeholder="Detalls del vehicle..."
+                                placeholder={t('dashboard.expo.edit.vehicleDetalls')}
                             />
                         </div>
 
                         {/* SELECTOR IMATGES */}
                         <div>
                             <label className="block text-xs font-bold uppercase mb-1 opacity-60">
-                                Imatges ({selectedImages.length} seleccionades)
+                                {t('dashboard.expo.edit.images')} ({selectedImages.length} {t('dashboard.expo.edit.select')})
                             </label>
                             <div className={`p-3 border-2 border-dashed rounded-xl ${isDarkMode ? "border-zinc-700" : "border-gray-200"}`}>
                                 <input
@@ -138,7 +138,7 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
                                     className={`w-full text-sm file:mr-4 cursor-pointer file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold ${isDarkMode ? "file:bg-orange-300/10 file:text-orange-300 hover:file:bg-orange-300/20" : "file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"}`}
                                 />
                                 <p className="text-[10px] text-gray-400 mt-2">
-                                    Pots seleccionar múltiples imatges. Toca una per marcar-la com a destacada.
+                                    {t('dashboard.expo.edit.text')}
                                 </p>
                             </div>
                         </div>
@@ -147,7 +147,7 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
                         {selectedImages.length > 0 && (
                             <div>
                                 <label className="block text-[10px] font-bold uppercase mb-2 opacity-60">
-                                    Toca per marcar com a destacada ⭐
+                                    {t('dashboard.expo.edit.touch')} ⭐
                                 </label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {selectedImages.map((img, index) => (
@@ -194,7 +194,7 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
                                 disabled={loading}
                                 className={`w-full py-3 rounded-xl cursor-pointer font-bold uppercase tracking-widest transition-all active:scale-95 ${loading ? "opacity-50 cursor-not-allowed" : ""} ${isDarkMode ? "bg-orange-400 text-black hover:bg-orange-300" : "bg-[#162354] text-white hover:bg-blue-900"}`}
                             >
-                                {loading ? "Enviant..." : "Crear Ítem"}
+                                {loading ? t('dashboard.expo.edit.send') : t('dashboard.expo.edit.createItem')}
                             </button>
                         </div>
                     </form>

@@ -54,7 +54,12 @@ const translation = {
                 cancel: "Cancel·lar",
                 saveChanges: "Guardar canvis",
                 updating: "Actualitzant...",
-                dontSave: "No s'ha pogut guardar"
+                dontSave: "No s'ha pogut guardar",
+                select: "seleccionades",
+                text: "Pots seleccionar múltiples imatges. Toca una per marcar-la com a destacada.",
+                createItem: "Crear Ítem",
+                send: "Enviant...",
+                vehicleDetalls: "Detalls del vehicle..."
             }
         }
     }

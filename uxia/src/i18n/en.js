@@ -5,7 +5,7 @@ const translation = {
         typing: "Search for an exhibition or a car...",
         maria:{
             title: "Which car is in front of you?",
-            text: "Our AI will identify it instantly with just one photo.",
+            text: "Our artificial intelligence will identify it instantly with just a photo.",
             button: "Open",
             buttonMaria: "Open camera"
         },
@@ -14,7 +14,7 @@ const translation = {
             back: "Back to home"
         },
         search:{
-            title: "Search exhibitions or cars...",
+            title: "Search for exhibitions or cars...",
             exhibitions: "Exhibitions",
             carsItems: "Cars/Items"
         }
@@ -27,13 +27,13 @@ const translation = {
         },
         landingPage:{
             welcome: "Welcome",
-            title: "My exhibitions",
+            title: "My Exhibitions",
             see: "View",
             back: "Back",
             loading: "Loading...",
             init: "Initial",
             available: "Available",
-            updatable: "Updateable"
+            updatable: "Updatable"
         },
         expo:{
             newItem: "New item",
@@ -47,12 +47,19 @@ const translation = {
                 name: "Vehicle name",
                 description: "Technical description",
                 images: "Images",
-                touch: "Tap to set as featured",
+                touch: "tap to set as featured",
                 chooseFiles: "Choose files",
-                notChooseFiles: "No file chosen",
+                notChooseFiles: "No files chosen",
                 addImages: "Add more images",
                 cancel: "Cancel",
-                saveChanges: "Save changes"
+                saveChanges: "Save changes",
+                updating: "Updating...",
+                dontSave: "Could not save",
+                select: "selected",
+                text: "You can select multiple images. Tap one to set it as featured.",
+                createItem: "Create Item",
+                send: "Sending...",
+                vehicleDetalls: "Vehicle details..."
             }
         }
     }

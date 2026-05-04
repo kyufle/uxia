@@ -2,7 +2,6 @@ import tempfile
 import ollama
 import os
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ItemCardSerializer
@@ -12,9 +11,10 @@ from django.db.models import Q
 from .models import Historial
 from django.core.files.base import ContentFile
 import base64
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import ItemCardSerializer
+import requests
 
 
 @api_view(['GET'])
@@ -393,3 +393,105 @@ def edit_expo_admin(request, expo_id):
         "state": expo.state,
     }, status=200)
 
+@api_view(['POST']) # CAMBIADO A POST: El curl que funciona usa POST
+@permission_classes([AllowAny])
+def login_maria_training(request):
+    """
+    POST /auth/login (Intermediaria)
+    Recibe las credenciales o usa las de por defecto y pide el token a la IA.
+    """
+    url_ia = "http://localhost:8765/auth/login"
+    
+    # Intentamos pillar las credenciales del request, si no, usamos las fijas que te funcionan
+    username = request.data.get("username", "uxiaweb2")
+    password = request.data.get("password", "uxiaweb314")
+    device = request.data.get("device", "web_browser")
+
+    payload = {
+        "username": username,
+        "password": password,
+        "device": device
+    }
+    
+    try:
+        # Llamada real a la IA externa
+        response_ia = requests.post(url_ia, json=payload, timeout=10)
+        data = response_ia.json()
+        
+        # Retornamos la respuesta de la IA (incluyendo el token) a nuestro frontend
+        return Response(data, status=response_ia.status_code)
+        
+    except requests.exceptions.RequestException as e:
+        return Response({
+            "error": "No s'ha pogut connectar amb el servei d'IA extern",
+            "details": str(e)
+        }, status=status.HTTP_502_BAD_GATEWAY)
+
+@api_view(['POST'])
+@authentication_classes([]) 
+@permission_classes([AllowAny])
+def classify_item_id(request):
+    image_file = request.FILES.get('image')
+    expo_id = request.data.get('expo_id')
+
+    if not image_file:
+        return Response({"error": "No s'ha proporcionat cap imatge"}, status=400)
+
+    url_ia = "http://localhost:8765/classify"
+    auth_header = request.headers.get('Authorization')
+
+    if not auth_header:
+        return Response({"error": "Falta el token d'autorització"}, status=401)
+
+    image_file.seek(0)
+    files = [('image', (image_file.name, image_file.read(), image_file.content_type))]
+    headers = {'Authorization': auth_header, 'accept': 'application/json'}
+
+    try:
+        response_ia = requests.post(url_ia, headers=headers, files=files, timeout=60)
+        
+        # Si la IA devuelve un error (como el 503 de modelo no entrenado)
+        if response_ia.status_code != 200:
+            return Response({
+                "error": "La IA encara no està a punt",
+                "status": response_ia.status_code,
+                "details": response_ia.json() if response_ia.headers.get('content-type') == 'application/json' else response_ia.text
+            }, status=response_ia.status_code)
+
+        ia_data = response_ia.json()
+        prediction = ia_data.get('prediction') # Ej: "Tesla Model S"
+
+        # 1. Limpiar el ID de la expo
+        clean_expo_id = str(expo_id).replace('expo-', '')
+        
+        # 2. Búsqueda inteligente: 
+        # Buscamos items que pertenezcan a esa expo Y cuyo nombre esté contenido en la predicción 
+        # o que la predicción contenga el nombre del item.
+        item_match = Item.objects.filter(expo_id=clean_expo_id).filter(
+            Q(name__icontains=prediction) | Q(description__icontains=prediction)
+        ).first()
+
+        if item_match:
+            # Serializamos la respuesta manualmente para asegurar compatibilidad
+            return Response({
+                "match": True,
+                "prediction": prediction,
+                "item": {
+                    "id": item_match.id,
+                    "name": item_match.name,
+                    "description": item_match.description,
+                    "image": item_match.featured_image.url if item_match.featured_image else None,
+                }
+            }, status=200)
+        
+        # Feedback si hay predicción pero no hay match en la BD de esa Expo
+        return Response({
+            "match": False, 
+            "prediction": prediction,
+            "message": f"S'ha identificat '{prediction}', però no consta a la base de dades d'aquesta exposició."
+        }, status=200)
+
+    except requests.exceptions.ConnectionError:
+        return Response({"error": "Servei temporalment no disponible (Túnel offline)."}, status=503)
+    except Exception as e:
+        return Response({"error": f"Error del sistema: {str(e)}"}, status=500)

@@ -6,6 +6,7 @@ import CookieBanner from '../components/CookieModal';
 import { ThemeContext } from '../context/themeContext';
 import CreateItemModal from "../components/CreateItemModal";
 import { useParams } from "react-router-dom";
+import IATrainButton from "../components/IATrainButton";
 
 export default function AdminItems() {
   const username = getUsername();
@@ -42,6 +43,7 @@ export default function AdminItems() {
           </p>
         </div>
         <div className="flex gap-3">
+          <IATrainButton expoId={expoId} isDarkMode={isDarkMode} />
           <button
             onClick={() => setIsModalOpen(true)}
             className={`flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 cursor-pointer rounded-xl text-xs md:text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md ${
@@ -53,6 +55,7 @@ export default function AdminItems() {
             <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
             </svg>
+            
             <span className="hidden sm:inline">Nou Item</span>
             <span className="sm:hidden">Nou</span>
           </button>

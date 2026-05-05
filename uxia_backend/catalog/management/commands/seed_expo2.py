@@ -75,7 +75,8 @@ class Command(BaseCommand):
             name=f"{fake.city()} Expo",
             state="DISPONIBLE",
             creationDate=fake.date_this_year(),
-            owner=user,  # Asignamos el único usuario creado arriba
+            owner=user,
+            language=random.choice(["ca", "es", "en", "fr"]),
         )
 
         self.stdout.write(f"Expo creada: {expo.name} (owner: {user.username})")

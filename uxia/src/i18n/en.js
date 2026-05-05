@@ -5,7 +5,7 @@ const translation = {
         typing: "Search for an exhibition or a car...",
         maria:{
             title: "Which car is in front of you?",
-            text: "Our AI will identify it instantly with just one photo.",
+            text: "Our AI will identify it instantly with just a photo.",
             button: "Open",
             buttonMaria: "Open camera"
         },
@@ -27,7 +27,7 @@ const translation = {
     },
     dashboard:{
         login:{
-            user: "Username",
+            user: "User",
             password: "Password",
             enter: "Login"
         },
@@ -39,7 +39,12 @@ const translation = {
             loading: "Loading...",
             init: "Initial",
             available: "Available",
-            updatable: "Updatable"
+            updatable: "Updateable",
+            edit:{
+                editExpo: "Edit exhibition",
+                nameExpo: "Exhibition name",
+                estat: "Status"
+            }
         },
         expo:{
             newItem: "New item",
@@ -62,7 +67,7 @@ const translation = {
                 updating: "Updating...",
                 dontSave: "Could not save",
                 select: "selected",
-                text: "You can select multiple images. Tap one to set it as featured.",
+                text: "You can select multiple images. Tap one to mark it as featured.",
                 createItem: "Create Item",
                 send: "Sending...",
                 vehicleDetalls: "Vehicle details..."

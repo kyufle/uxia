@@ -365,6 +365,7 @@ def get_my_expos(request):
             "id": expo.id,
             "name": expo.name,
             "state": expo.state,
+            "language": expo.language,
             "creationDate": expo.creationDate,
             "items_preview": items_preview,
         })
@@ -383,7 +384,8 @@ def edit_expo_admin(request, expo_id):
         expo.name = request.data.get('name')
     if 'state' in request.data:
         expo.state = request.data.get('state')
-
+    if 'language' in request.data:
+        expo.language = request.data.get('language')
     expo.save()
 
     return Response({
@@ -391,5 +393,6 @@ def edit_expo_admin(request, expo_id):
         "id": expo.id,
         "name": expo.name,
         "state": expo.state,
+        "language": expo.language,
     }, status=200)
 

@@ -39,7 +39,12 @@ const translation = {
             loading: "Carregant...",
             init: "Inicial",
             available: "Disponible",
-            updatable: "Actualitzable"
+            updatable: "Actualitzable",
+            edit:{
+                editExpo: "Editar exposició",
+                nameExpo: "Nom de l'exposició",
+                estat: "Estat"
+            }
         },
         expo:{
             newItem: "Nou item",
@@ -65,7 +70,8 @@ const translation = {
                 text: "Pots seleccionar múltiples imatges. Toca una per marcar-la com a destacada.",
                 createItem: "Crear Ítem",
                 send: "Enviant...",
-                vehicleDetalls: "Detalls del vehicle..."
+                vehicleDetalls: "Detalls del vehicle...",
+                save: "Guardant..."
             }
         }
     }

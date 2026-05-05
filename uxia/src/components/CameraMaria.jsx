@@ -1,6 +1,7 @@
 import { CameraIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useState, useRef, useEffect } from 'react';
 import config from "../config";
+import VoiceButton from './VoiceButton'
 import { useTranslation } from 'react-i18next';
 
 const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -69,13 +70,14 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   const handleFileUpload = async (eventOrFile) => {
     let file = eventOrFile.target ? eventOrFile.target.files[0] : eventOrFile;
     if (!file) return;
-
+    const selectedLanguage = localStorage.getItem('i18nextLng') || 'ca';
     setPreview(URL.createObjectURL(file));
     setLoading(true);
     setResultado(null);
 
     const formData = new FormData();
     formData.append('image', file);
+    formData.append('lang', selectedLanguage);
 
     try {
       // 1. Petición a la IA (Corregido a la URL real)
@@ -198,6 +200,11 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
               <p className={"text-center text-sm italic font-medium leading-relaxed " + (isDarkMode ? "text-white " : "text-black")}>
                 "{resultado.descripcio}"
               </p>
+              <VoiceButton 
+                text={resultado.descripcio}
+                language={resultado.idioma}
+                isDarkMode={isDarkMode} 
+              />
             </div>
           )}
         </div>

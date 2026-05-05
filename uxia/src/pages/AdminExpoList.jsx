@@ -81,6 +81,13 @@ export default function AdminExpoList() {
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATE_STYLES[expo.state]}`}>
                     {STATE_LABELS[expo.state]}
                   </span>
+                  {expo.language && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase border ${
+                      isDarkMode ? "border-gray-600 text-gray-400" : "border-gray-200 text-gray-500"
+                    }`}>
+                      {expo.language}
+                    </span>
+                  )}
                 </div>
                 <p className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>{expo.creationDate}</p>
               </div>

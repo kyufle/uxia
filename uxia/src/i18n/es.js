@@ -39,7 +39,12 @@ const translation = {
             loading: "Cargando...",
             init: "Inicial",
             available: "Disponible",
-            updatable: "Actualizable"
+            updatable: "Actualizable",
+            edit:{
+                editExpo: "Editar exposición",
+                nameExpo: "Nombre de la exposición",
+                estat: "Estado"
+            }
         },
         expo:{
             newItem: "Nuevo ítem",
@@ -54,7 +59,7 @@ const translation = {
                 description: "Descripción técnica",
                 images: "Imágenes",
                 touch: "toca para marcar como destacada",
-                chooseFiles: "Elige los archivos",
+                chooseFiles: "Elegir archivos",
                 notChooseFiles: "No se ha elegido ningún archivo",
                 addImages: "Añadir más imágenes",
                 cancel: "Cancelar",

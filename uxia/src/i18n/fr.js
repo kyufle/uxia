@@ -5,17 +5,17 @@ const translation = {
         typing: "Rechercher une exposition ou une voiture...",
         maria:{
             title: "Quelle voiture est devant vous ?",
-            text: "Notre intelligence artificielle l'identifiera instantanément avec une simple photo.",
+            text: "Notre intelligence artificielle l'identifiera instantanément avec une seule photo.",
             button: "Ouvrir",
-            buttonMaria: "Ouvrir la caméra"
+            buttonMaria: "Ouvrir l'appareil photo"
         },
         history:{
-            notappointment : "Vous n'avez pas encore de consultations.",
+            notappointment : "Vous n'avez pas encore de consultation.",
             back: "Retour à l'accueil",
             charge: "Chargement de l'historique..."
         },
         search:{
-            title: "Rechercher des expositions ou voitures...",
+            title: "Rechercher des expositions ou des voitures...",
             exhibitions: "Expositions",
             carsItems: "Voitures/Articles"
         },
@@ -39,7 +39,12 @@ const translation = {
             loading: "Chargement...",
             init: "Initial",
             available: "Disponible",
-            updatable: "Mise à jour disponible"
+            updatable: "Mise à jour disponible",
+            edit:{
+                editExpo: "Modifier l'exposition",
+                nameExpo: "Nom de l'exposition",
+                estat: "État"
+            }
         },
         expo:{
             newItem: "Nouvel article",
@@ -56,13 +61,13 @@ const translation = {
                 touch: "appuyez pour mettre en avant",
                 chooseFiles: "Choisir des fichiers",
                 notChooseFiles: "Aucun fichier choisi",
-                addImages: "Ajouter d'autres images",
+                addImages: "Ajouter plus d'images",
                 cancel: "Annuler",
                 saveChanges: "Enregistrer les modifications",
                 updating: "Mise à jour...",
                 dontSave: "Impossible d'enregistrer",
                 select: "sélectionnées",
-                text: "Vous pouvez sélectionner plusieurs images. Appuyez sur l'une d'elles pour la mettre en avant.",
+                text: "Vous pouvez sélectionner plusieurs images. Appuyez sur une pour la mettre en avant.",
                 createItem: "Créer l'article",
                 send: "Envoi en cours...",
                 vehicleDetalls: "Détails du véhicule..."

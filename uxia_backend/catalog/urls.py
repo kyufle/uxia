@@ -1,7 +1,5 @@
 from django.urls import path
-from .views import (get_coches, get_expos, get_coches_expo, foto_maria, get_items_expo, 
-                    login_admin, create_item_admin, edit_item_admin, get_my_expos, edit_expo_admin, 
-                    save_historial, get_historial, login_maria_training, classify_item_id)
+from .views import check_training, get_coches, get_expo_state, get_expos, get_coches_expo, foto_maria, get_items_expo, login_admin, create_item_admin, edit_item_admin, get_my_expos, edit_expo_admin, login_maria_training, save_historial, get_historial, train_expo, train_log
 
 
 urlpatterns = [
@@ -17,6 +15,12 @@ urlpatterns = [
     path('edit-item-admin/', edit_item_admin, name='edit_item_admin'),
     path("my-expos/", get_my_expos),
     path('expos/<int:expo_id>/edit/', edit_expo_admin, name='edit_expo_admin'),
-    path('auth/login', login_maria_training),
-    path('classify/', classify_item_id, name='classify_item_id'),
+    
+    path('login_maria_training/', login_maria_training),
+    path('train-expo/<int:expo_id>/', train_expo),
+    path('train/check/', check_training),
+    path('train/log/', train_log),
+    path('expo/<int:expo_id>/state/', get_expo_state),
+    
+
 ]

@@ -13,8 +13,11 @@ from .models import Historial
 from django.core.files.base import ContentFile
 import base64
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import ItemCardSerializer
+import requests 
+import threading
+
 
 
 @api_view(['GET'])
@@ -289,34 +292,39 @@ def create_item_admin(request):
 @permission_classes([IsAuthenticated])
 def edit_item_admin(request):
     try:
+        import json
+
         item_id = request.data.get('id')
         if not item_id:
-            return Response({"error": "Falta el ID para identificar el item"}, status=400)
+            return Response({"error": "Falta el ID"}, status=400)
 
         try:
             item = Item.objects.get(id=item_id)
         except Item.DoesNotExist:
-            return Response({"error": f"No se ha encontrado el item con ID {item_id}"}, status=404)
+            return Response({"error": "Item no encontrado"}, status=404)
 
+        # ✅ CAMPOS
         if 'name' in request.data:
             item.name = request.data.get('name')
 
         if 'description' in request.data:
             item.description = request.data.get('description')
 
-        expo_val = request.data.get('expo')
-        if expo_val:
-            try:
-                expo_obj = Expo.objects.get(name__iexact=expo_val.replace('-', ' '))
-                item.expo = expo_obj
-            except Expo.DoesNotExist:
-                pass
+        if 'expo' in request.data:
+            expo_val = request.data.get('expo')
+            if expo_val:
+                try:
+                    item.expo = Expo.objects.get(name__iexact=expo_val.replace('-', ' '))
+                except Expo.DoesNotExist:
+                    item.expo = None
+            else:
+                item.expo = None
 
+        # ✅ FEATURED IMAGE
         if 'featured_image' in request.FILES:
             item.featured_image = request.FILES['featured_image']
 
-        # ✅ imagen de galería existente pasa a ser destacada
-        if 'featured_image_id' in request.data:
+        elif 'featured_image_id' in request.data:
             try:
                 img_obj = Image.objects.get(id=request.data['featured_image_id'], item=item)
                 item.featured_image = img_obj.path
@@ -324,23 +332,36 @@ def edit_item_admin(request):
             except Image.DoesNotExist:
                 pass
 
+        elif request.data.get('featured_image') == 'null':
+            item.featured_image = None
+
         item.save()
 
-        item.expo.state = "ACTUALIZABLE"
-        item.expo.save()
+        # ✅ ESTADO EXPO
+        if item.expo:
+            item.expo.state = "ACTUALIZABLE"
+            item.expo.save()
 
-        extra_images = request.FILES.getlist('images')
-        for img in extra_images:
+        # 🔥 SINCRONIZAR IMÁGENES EXISTENTES
+        if 'existing_images' in request.data:
+            try:
+                ids = json.loads(request.data.get('existing_images'))
+
+                Image.objects.filter(item=item).exclude(id__in=ids).delete()
+            except Exception as e:
+                print("Error existing_images:", e)
+
+        # 🔥 AÑADIR NUEVAS
+        for img in request.FILES.getlist('images'):
             Image.objects.create(path=img, item=item, isPublic=True)
 
         return Response({
             "message": "Item actualizado correctamente",
-            "id": item.id,
-            "name": item.name
-        }, status=status.HTTP_200_OK)
+            "id": item.id
+        }, status=200)
 
     except Exception as e:
-        print(f"Error en edit_item_admin: {str(e)}")
+        print("ERROR:", str(e))
         return Response({"error": str(e)}, status=500)
 
 
@@ -393,3 +414,227 @@ def edit_expo_admin(request, expo_id):
         "state": expo.state,
     }, status=200)
 
+#como funciona el token de la IA en sesión:
+# Backend guarda el token en sesión → se queda en el servidor, la sesion es un identificador único que el navegador guarda como cookie (sessionid) 
+# → el navegador solo ve esa cookie, no el token real de la IA.
+# El navegador solo recibe una cookie de sesión (sessionid)
+# En cada llamada siguiente el navegador envía esa cookie → el backend la usa para recuperar el token de la IA internamente
+
+
+IA_URL = "http://localhost:8765"
+
+
+def get_ia_token(request):
+    return request.session.get("IA_TOKEN")
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_maria_training(request):
+    try:
+        login_res = requests.post(f"{IA_URL}/auth/login", json={
+            "username": "uxiaweb2",
+            "password": "uxiaweb314",
+            "device": "web_browser"
+        }, timeout=10)
+        data = login_res.json()
+        token = data.get("token")
+        if not token:
+            return Response({"error": "No token received"}, status=500)
+        request.session["IA_TOKEN"] = token
+        return Response(data, status=login_res.status_code)
+    except requests.exceptions.RequestException as e:
+        return Response({"error": "No es pot connectar amb la IA", "details": str(e)}, status=502)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def train_expo(request, expo_id):
+    try:
+        ia_token = get_ia_token(request)
+        if not ia_token:
+            return Response({"error": "IA no inicialitzada"}, status=401)
+
+        expo = Expo.objects.get(id=expo_id, owner=request.user)
+
+        threading.Thread(
+            target=run_training,
+            args=(expo_id, ia_token, request.user.id)
+        ).start()
+
+        return Response({"status": "started"}, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_training(request):
+    try:
+        ia_token = get_ia_token(request)
+        if not ia_token:
+            return Response({"error": "IA no inicialitzada"}, status=401)
+
+        response = requests.get(
+            f"{IA_URL}/train/check",
+            headers={"Authorization": f"Bearer {ia_token}"}
+        )
+        data = response.json()
+        print(f"[CHECK] Status: {data.get('status')} — {data}")  # ← añade esto
+
+        expo_id = request.query_params.get("expo_id")
+        if expo_id and data.get("status") == "OK":
+            try:
+                expo = Expo.objects.get(id=expo_id, owner=request.user)
+                expo.state = "DISPONIBLE"
+                expo.save()
+            except Expo.DoesNotExist:
+                pass
+
+        return Response(data, status=response.status_code)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def train_log(request):
+    try:
+        ia_token = get_ia_token(request)
+        if not ia_token:
+            return Response({"error": "IA no inicialitzada"}, status=401)
+
+        response = requests.get(
+            f"{IA_URL}/train/log",
+            headers={"Authorization": f"Bearer {ia_token}"}
+        )
+        return Response(response.json(), status=response.status_code)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+#FUNCION que hace todo el proceso de entrenamiento, se puede llamar desde un worker o similar para no bloquear el hilo principal del servidor durante el proceso.
+def run_training(expo_id, ia_token, user_id):
+    try:
+        expo = Expo.objects.get(id=expo_id, owner_id=user_id)
+        estado_anterior = expo.state
+
+        # 1. DELETE dataset
+        del_res = requests.delete(
+            f"{IA_URL}/dataset/default",
+            headers={"Authorization": f"Bearer {ia_token}"}
+        )
+        print(f"[DELETE] Status: {del_res.status_code} — {del_res.json()}")
+
+        runtime_res = requests.get(
+            f"{IA_URL}/runtime",
+            headers={"Authorization": f"Bearer {ia_token}"}
+        )
+        print(f"[RUNTIME] Después del DELETE: {runtime_res.json()}")
+
+        # 2. Preparar imágenes
+        items = Item.objects.filter(expo=expo).prefetch_related('image_set')
+        files_payload = []
+        labels_payload = []
+
+        for item in items:
+            images_to_upload = []
+            if item.featured_image:
+                images_to_upload.append(item.featured_image)
+            for img in item.image_set.all():
+                images_to_upload.append(img.path)
+            for img_field in images_to_upload:
+                try:
+                    img_field.open('rb')
+                    files_payload.append(
+                        ("files", (os.path.basename(img_field.name), img_field.read(), "image/jpeg"))
+                    )
+                    labels_payload.append(("labels", item.name))
+                    img_field.close()
+                except Exception as e:
+                    print(f"[TRAIN] Error llegint imatge {img_field.name}: {e}")
+                    continue
+
+        print(f"[TRAIN] Total imatges: {len(files_payload)} — Labels: {[l[1] for l in labels_payload]}")
+
+        if not files_payload:
+            print("[TRAIN] No hi ha imatges, cancel·lant entrenament")
+            expo.state = estado_anterior
+            expo.save()
+            return
+
+        # 3. UPLOAD
+        upload_res = requests.post(
+            f"{IA_URL}/dataset/images",
+            headers={"Authorization": f"Bearer {ia_token}"},
+            files=files_payload,
+            data=labels_payload
+        )
+        print(f"[UPLOAD] Status: {upload_res.status_code} — {upload_res.text}")
+
+        if not upload_res.ok and upload_res.status_code != 409:
+            print(f"[UPLOAD] Error fatal: {upload_res.text}")
+            expo.state = estado_anterior
+            expo.save()
+            return
+
+        # 4. TRAIN
+        train_res = requests.post(
+            f"{IA_URL}/train",
+            headers={"Authorization": f"Bearer {ia_token}"}
+        )
+        print(f"[TRAIN] Status: {train_res.status_code} — {train_res.text}")
+
+        if not train_res.ok:
+            print(f"[TRAIN] Error: {train_res.text}")
+            expo.state = estado_anterior
+            expo.save()
+            return
+
+        # ✅ Solo aquí ponemos RUNNING — el train realmente arrancó
+        expo.state = "RUNNING"
+        expo.save()
+
+        # 5. POLLING en el thread hasta OK o ERROR
+        import time
+        while True:
+            time.sleep(5)
+            check_res = requests.get(
+                f"{IA_URL}/train/check",
+                headers={"Authorization": f"Bearer {ia_token}"}
+            )
+            check_data = check_res.json()
+            ia_status = check_data.get("status")
+            print(f"[THREAD CHECK] IA status: {ia_status} — {check_data.get('global_percentage', '?')}")
+
+            if ia_status == "OK":
+                expo.state = "DISPONIBLE"
+                expo.save()
+                print(f"[THREAD] Entrenament completat — expo {expo_id} → DISPONIBLE")
+                break
+            elif ia_status in ["ERROR", "CANCELLED"]:
+                expo.state = estado_anterior
+                expo.save()
+                print(f"[THREAD] Entrenament fallat — expo {expo_id} → {estado_anterior}")
+                break
+
+    except Exception as e:
+        print(f"[THREAD] ERROR CRÍTIC: {str(e)}")
+        try:
+            expo = Expo.objects.get(id=expo_id, owner_id=user_id)
+            expo.state = estado_anterior
+            expo.save()
+        except:
+            pass
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_expo_state(request, expo_id):
+    try:
+        expo = Expo.objects.get(id=expo_id, owner=request.user)
+        return Response({"state": expo.state})
+    except Expo.DoesNotExist:
+        return Response({"error": "Expo no trobada"}, status=404)
+        

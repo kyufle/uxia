@@ -1,53 +1,70 @@
 import { useState, useEffect, useRef } from "react";
 import config from "../config";
 
-export default function IATrainButton({ expoId, isDarkMode }) {
+export default function IATrainButton({ expoId }) {
+  // Estados según la spec: IDLE, QUEUED, RUNNING, OK, ERROR, CANCELLED, REPLACE
   const [status, setStatus] = useState("IDLE");
   const [loading, setLoading] = useState(false);
-  const [log, setLog] = useState("");
   const intervalRef = useRef(null);
 
   const getHeaders = () => ({
-    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",
   });
+
+  useEffect(() => {
+    const fetchInitialState = async () => {
+      try {
+        const res = await fetch(
+          `${config.API_URL}/api/expo/${expoId}/state/`,
+          {
+            headers: getHeaders(),
+            credentials: "include",
+          }
+        );
+        const data = await res.json();
+
+        // Si la expo ya está DISPONIBLE, el estado de la IA es OK
+        if (data.state === "DISPONIBLE") setStatus("OK");
+        else if (data.state === "RUNNING") {
+          setStatus("RUNNING");
+          setLoading(true);
+          startPolling();
+        } else setStatus("IDLE");
+      } catch (e) {
+        console.error(e);
+        setStatus("ERROR");
+      }
+    };
+
+    if (expoId) fetchInitialState();
+  }, [expoId]);
 
   const startTraining = async () => {
     try {
       setLoading(true);
+      setStatus("QUEUED"); // Cambiamos a QUEUED antes de empezar
+
+      const loginRes = await fetch(
+        `${config.API_URL}/api/login_maria_training/`,
+        { method: "POST", credentials: "include" }
+      );
+      if (!loginRes.ok) throw new Error("Login IA failed");
+
+      const trainRes = await fetch(
+        `${config.API_URL}/api/train-expo/${expoId}/`,
+        {
+          method: "POST",
+          headers: getHeaders(),
+          credentials: "include",
+        }
+      );
+      if (!trainRes.ok) throw new Error("Error starting train");
+
       setStatus("RUNNING");
-      setLog("Connectant amb la IA...");
-
-      // 1. LOGIN IA
-      const loginRes = await fetch(`${config.API_URL}/api/login_maria_training/`, {
-        method: "POST",
-        headers: getHeaders(),
-        credentials: "include",
-        body: JSON.stringify({}),
-      });
-      if (!loginRes.ok) {
-        const err = await loginRes.json();
-        throw new Error(err.error || "Login IA failed");
-      }
-      setLog("Login OK. Pujant imatges i entrenant...");
-
-      // 2. TRAIN EXPO (delete + upload + train)
-      const trainRes = await fetch(`${config.API_URL}/api/train-expo/${expoId}/`, {
-        method: "POST",
-        headers: getHeaders(),
-        credentials: "include",
-      });
-      if (!trainRes.ok) {
-        const err = await trainRes.json();
-        throw new Error(err.error || "Error iniciant entrenament");
-      }
-
-      setLog("Entrenament iniciat. Esperant resultats...");
       startPolling();
-
     } catch (err) {
       console.error(err);
-      setLog(`Error: ${err.message}`);
       setStatus("ERROR");
       setLoading(false);
     }
@@ -55,80 +72,76 @@ export default function IATrainButton({ expoId, isDarkMode }) {
 
   const startPolling = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+
     intervalRef.current = setInterval(async () => {
       try {
         const res = await fetch(
-          `${config.API_URL}/api/train/check/?expo_id=${expoId}`,
-          { headers: getHeaders(), credentials: "include" }
+          `${config.API_URL}/api/expo/${expoId}/state/`,
+          {
+            headers: getHeaders(),
+            credentials: "include",
+          }
         );
         const data = await res.json();
 
-        if (data.status === "QUEUED") {
-          setLog(`En cua, posició: ${data.queue_position || "?"}`);
-        }
-        if (data.status === "RUNNING") {
+        if (data.state === "RUNNING") {
           setStatus("RUNNING");
-          if (data.global_percentage) {
-            setLog(`Entrenant... ${data.global_percentage} — ETA: ${data.eta || "?"}`);
-          }
-        }
-        if (data.status === "OK") {
+        } else if (data.state === "DISPONIBLE") {
           setStatus("OK");
           setLoading(false);
-          setLog("Entrenament completat ✓");
           clearInterval(intervalRef.current);
-        }
-        if (["ERROR", "CANCELLED"].includes(data.status)) {
+        } else {
           setStatus("ERROR");
           setLoading(false);
-          setLog(`Error: ${data.status}`);
           clearInterval(intervalRef.current);
         }
       } catch (e) {
         console.error(e);
         setStatus("ERROR");
         setLoading(false);
-        setLog("Error de connexió durant el polling");
         clearInterval(intervalRef.current);
       }
     }, 3000);
   };
 
   useEffect(() => {
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
-  return (
-    <div className="flex flex-col gap-1">
-      <button
-        onClick={startTraining}
-        disabled={loading || status === "RUNNING"}
-        className={`
-          flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm
-          transition-all active:scale-95 shadow-md disabled:opacity-50
-          ${status === "OK" ? "bg-green-500 text-white"
-            : status === "ERROR" ? "bg-red-500 text-white"
-            : "bg-purple-600 text-white hover:bg-purple-700"}
-        `}
-      >
-        {(loading || status === "RUNNING") && (
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        )}
-        {status === "IDLE" && "Entrena IA"}
-        {status === "RUNNING" && "Entrenant..."}
-        {status === "OK" && "✓ IA OK"}
-        {status === "ERROR" && "✗ Error — Tornar a intentar"}
-      </button>
+  // Función para obtener el color dinámico según la spec
+  const getStatusStyles = () => {
+    switch (status) {
+      case "OK": return "bg-green-600 text-white";
+      case "RUNNING": return "bg-blue-600 text-white animate-pulse";
+      case "QUEUED": return "bg-yellow-500 text-black";
+      case "ERROR": return "bg-red-600 text-white";
+      default: return "bg-gray-600 text-white hover:bg-gray-700";
+    }
+  };
 
-      {log && (
-        <p className={`text-xs px-1 ${
-          status === "ERROR" ? "text-red-500"
-          : status === "OK" ? "text-green-500"
-          : isDarkMode ? "text-gray-400" : "text-gray-500"
-        }`}>
-          {log}
-        </p>
+  const disabled = loading || status === "RUNNING" || status === "OK" || status === "QUEUED";
+
+  // Cambia la etiqueta de retorno del IATrainButton por esta:
+  return (
+  <button
+    onClick={startTraining}
+    disabled={disabled}
+    className={`w-full sm:w-auto min-w-[110px] cursor-pointer md:min-w-[140px] flex flex-col items-center justify-center px-5 py-1.5 rounded-xl font-bold transition-all duration-200 shadow-md active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed ${getStatusStyles()}`}
+  >
+    <span className="text-[10px] md:text-[11px] uppercase tracking-tight opacity-80 leading-none mb-0.5">
+      Current Train
+    </span>
+    
+    <div className="flex items-center gap-2">
+      {status === "RUNNING" && (
+        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
       )}
+      <span className="text-xs sm:text-sm md:text-base whitespace-nowrap">
+        {status === "OK" ? "OK ✓" : status}
+      </span>
     </div>
-  );
+  </button>
+);
 }

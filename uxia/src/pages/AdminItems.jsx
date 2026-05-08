@@ -6,6 +6,8 @@ import CookieBanner from "../components/CookieModal";
 import { ThemeContext } from "../context/themeContext";
 import CreateItemModal from "../components/CreateItemModal";
 import IATrainButton from "../components/IATrainButton";
+import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function AdminItems() {
   const username = getUsername();
@@ -19,6 +21,8 @@ export default function AdminItems() {
   const [hasConsent, setHasConsent] = useState(() => {
     return localStorage.getItem("cookie-consent") === "true";
   });
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!isAdmin()) {

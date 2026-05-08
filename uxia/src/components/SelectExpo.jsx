@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import config from '../config';
+import { useTranslation } from "react-i18next";
 
 const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
     const [open, setOpen] = useState(false);
     const [results, setResults] = useState({ expos: [], coches: [] });
-
+    const {t} = useTranslation();
     useEffect(() => {
     async function lookforData() {
         if (seleccionado && seleccionado.length >= 3) {
@@ -66,7 +67,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
             <input
                 className={"w-full border border-solid p-2 pl-10 rounded-sm focus:outline-none " + (isDarkMode ? "bg-gray-900 text-white border-gray-700 focus:border-orange-300" : "bg-white border-gray-200 focus:border-sky-500")}
                 type="text"
-                placeholder="Busca exposicions o cotxes..."
+                placeholder={t('landingPage.search.title')}
                 onChange={(e) => setSeleccionado(e.target.value)}
                 value={seleccionado ?? ""}
             />
@@ -78,7 +79,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
                         {results.expos.length > 0 && (
                             <div>
                                 <div className={`px-4 py-1 text-xs font-bold uppercase tracking-wider ${isDarkMode ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-500"}`}>
-                                    Exposicions
+                                    {t('landingPage.search.exhibitions')}
                                 </div>
                                 {results.expos.map(n => renderItem(n, 'expo'))}
                             </div>
@@ -87,7 +88,7 @@ const SelectExpo = ({ seleccionado, setSeleccionado, isDarkMode }) => {
                         {results.coches.length > 0 && (
                             <div>
                                 <div className={`px-4 py-1 text-xs font-bold uppercase tracking-wider ${isDarkMode ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-500"}`}>
-                                    Cotxes/Items
+                                    {t('landingPage.search.carsItems')}
                                 </div>
                                 {results.coches.map(n => renderItem(n, 'coche'))}
                             </div>

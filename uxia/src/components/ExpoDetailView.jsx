@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react'; // Añadido useCallback
 import config from '../config';
 import { EditItemModal } from './EditItemModal'; // Importación del componente
+import { useTranslation } from 'react-i18next';
 
 export function ExpoDetailView({ seleccionado, isDarkMode, hasConsent }) {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingItem, setEditingItem] = useState(null); // Estado para controlar el modal
 
+    const {t} = useTranslation();
     // Extraemos chargeData para poder reutilizarla tras editar
     const chargeData = useCallback(async () => {
         if (!hasConsent || !seleccionado) return;
@@ -53,7 +55,7 @@ export function ExpoDetailView({ seleccionado, isDarkMode, hasConsent }) {
                         {items.length > 0 ? items[0].expo : `Expo ${seleccionado}`}
                     </h1>
                     <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                        Total: {items.length} ítems en llista
+                        {t('dashboard.expo.total')}: {items.length} {t('dashboard.expo.list')}
                     </p>
                 </div>
             </div>
@@ -75,7 +77,7 @@ export function ExpoDetailView({ seleccionado, isDarkMode, hasConsent }) {
                                 onClick={() => setEditingItem(item)} // Abrir modal
                                 className="text-[10px] uppercase font-bold px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                             >
-                                Editar
+                                {t('dashboard.expo.editButton')}
                             </button>
                         </div>
                     </div>

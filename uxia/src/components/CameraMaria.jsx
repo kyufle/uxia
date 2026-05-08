@@ -1,6 +1,8 @@
 import { CameraIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useState, useRef, useEffect } from 'react';
 import config from "../config";
+import VoiceButton from './VoiceButton'
+import { useTranslation } from 'react-i18next';
 
 const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
@@ -10,6 +12,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   const [preview, setPreview] = useState(null);
   const [stream, setStream] = useState(null);
   const videoRef = useRef(null);
+  const {t} = useTranslation();
 
   const getUserIdFromCookie = () => {
     const name = "uxia_user_id=";
@@ -67,13 +70,14 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   const handleFileUpload = async (eventOrFile) => {
     let file = eventOrFile.target ? eventOrFile.target.files[0] : eventOrFile;
     if (!file) return;
-
+    const selectedLanguage = localStorage.getItem('i18nextLng') || 'ca';
     setPreview(URL.createObjectURL(file));
     setLoading(true);
     setResultado(null);
 
     const formData = new FormData();
     formData.append('image', file);
+    formData.append('lang', selectedLanguage);
 
     try {
       // 1. Petición a la IA (Corregido a la URL real)
@@ -126,7 +130,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
           >
             <CameraIcon className={`w-6 h-6 stroke-[1.5] ${isDarkMode ? "text-sky-400" : "text-blue-400"}`} />
             <span className="text-base">
-              Obrir <span className={`font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>marIA 2.0</span>
+              {t('landingPage.maria.button')} <span className={`font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>marIA 2.0</span>
             </span>
             <span className="relative flex h-2 w-2 ml-1">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-300 opacity-75"></span>
@@ -179,7 +183,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
                 <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} shadow-sm w-full sm:w-auto`}>
                   <button onClick={openCamera} className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5 ${isDarkMode ? "bg-slate-950 text-slate-50 hover:bg-blue-950/50" : "bg-white text-slate-800 hover:bg-blue-50/50"} rounded-full font-semibold tracking-wide transition-all duration-300 ease-out hover:shadow-md hover:-translate-y-0.5 active:scale-95`}>
                     <CameraIcon className={`w-6 h-6 stroke-[1.5] ${isDarkMode ? "text-sky-400" : "text-blue-400"}`} />
-                    <span className="text-base">Obrir càmera</span>
+                    <span className="text-base">{t('landingPage.maria.buttonMaria')}</span>
                   </button>
                 </div>
               ) : (
@@ -196,6 +200,11 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
               <p className={"text-center text-sm italic font-medium leading-relaxed " + (isDarkMode ? "text-white " : "text-black")}>
                 "{resultado.descripcio}"
               </p>
+              <VoiceButton 
+                text={resultado.descripcio}
+                language={resultado.idioma}
+                isDarkMode={isDarkMode} 
+              />
             </div>
           )}
         </div>

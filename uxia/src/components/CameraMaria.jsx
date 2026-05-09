@@ -174,7 +174,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
               <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} shadow-sm w-full sm:w-auto`}>
                 <label className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5 ${isDarkMode ? "bg-slate-950 text-slate-50 hover:bg-blue-950/50" : "bg-white text-slate-800 hover:bg-blue-50/50"} rounded-full font-semibold tracking-wide transition-all duration-300 ease-out hover:shadow-md hover:-translate-y-0.5 active:scale-95`}>
                   <CameraIcon className={`w-6 h-6 stroke-[1.5] ${isDarkMode ? "text-sky-400" : "text-blue-400"}`} />
-                  <span className="text-base">{preview ? "Canviar foto" : "Fer foto"}</span>
+                  <span className="text-base">{preview ? "Canviar foto" : t('landingPage.maria.photo')}</span>
                   <input type="file" accept="image/*" capture="environment" onChange={handleFileUpload} className="hidden" />
                 </label>
               </div>
@@ -189,7 +189,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
               ) : (
                 <div className="flex flex-col items-center space-y-3">
                   <video ref={videoRef} autoPlay playsInline className="rounded-xl w-full max-w-xs" />
-                  <button onClick={takePhoto} className="px-4 py-2 bg-green-500 cursor-pointer hover:scale-90 transition-all text-white rounded-full">Fer foto</button>
+                  <button onClick={takePhoto} className="px-4 py-2 bg-green-500 cursor-pointer hover:scale-90 transition-all text-white rounded-full">{t('landingPage.maria.photo')}</button>
                 </div>
               )
             )}

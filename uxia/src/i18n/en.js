@@ -1,37 +1,40 @@
 const translation = {
-    landingPage:{
+    landingPage: {
         administrationAccess: "Admin Access",
         notSelected: "No exhibition selected",
         typing: "Search for an exhibition or a car...",
-        maria:{
+        maria: {
             title: "Which car is in front of you?",
-            text: "Our AI will identify it instantly with just a photo.",
+            text: "Our AI will identify it instantly with just one photo.",
             button: "Open",
-            buttonMaria: "Open camera"
+            buttonMaria: "Open camera",
+            stop: "Stop",
+            play: "Play",
+            photo: "Take photo"
         },
-        history:{
-            notappointment : "You don't have any queries yet.",
+        history: {
+            notappointment: "You don't have any inquiries yet.",
             back: "Back to home",
             charge: "Loading history..."
         },
-        search:{
+        search: {
             title: "Search exhibitions or cars...",
             exhibitions: "Exhibitions",
             carsItems: "Cars/Items"
         },
-        cookies:{
+        cookies: {
             title: "Your privacy matters",
             text: "We use cookies to improve your experience.",
             button: "Accept all"
         }
     },
-    dashboard:{
-        login:{
+    dashboard: {
+        login: {
             user: "User",
             password: "Password",
             enter: "Login"
         },
-        landingPage:{
+        landingPage: {
             welcome: "Welcome",
             title: "My exhibitions",
             see: "View",
@@ -40,27 +43,27 @@ const translation = {
             init: "Initial",
             available: "Available",
             updatable: "Updateable",
-            edit:{
+            edit: {
                 editExpo: "Edit exhibition",
                 nameExpo: "Exhibition name",
                 estat: "Status"
             }
         },
-        expo:{
+        expo: {
             newItem: "New item",
             back: "back",
             total: "Total",
             list: "items in list",
             editButton: "edit",
             new: "New",
-            edit:{
+            edit: {
                 title: "Edit vehicle",
                 name: "Vehicle name",
                 description: "Technical description",
                 images: "Images",
                 touch: "tap to set as featured",
                 chooseFiles: "Choose files",
-                notChooseFiles: "No files chosen",
+                notChooseFiles: "No file chosen",
                 addImages: "Add more images",
                 cancel: "Cancel",
                 saveChanges: "Save changes",
@@ -70,7 +73,8 @@ const translation = {
                 text: "You can select multiple images. Tap one to mark it as featured.",
                 createItem: "Create Item",
                 send: "Sending...",
-                vehicleDetalls: "Vehicle details..."
+                vehicleDetalls: "Vehicle details...",
+                save: "Saving..."
             }
         }
     }

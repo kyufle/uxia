@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import config from "../config";
-
+import { useTranslation } from "react-i18next";
 export default function IATrainButton({ expoId }) {
   // Estados según la spec: IDLE, QUEUED, RUNNING, OK, ERROR, CANCELLED, REPLACE
   const [status, setStatus] = useState("IDLE");
   const [loading, setLoading] = useState(false);
   const intervalRef = useRef(null);
+  const {t} = useTranslation();
 
   const getHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -121,6 +122,16 @@ export default function IATrainButton({ expoId }) {
     }
   };
 
+  const getStatusText = () => {
+    switch (status) {
+      case "OK": return "OK ✓";
+      case "RUNNING": return t("dashboard.ia.running");
+      case "QUEUED": return t("dashboard.ia.queued");
+      case "ERROR": return t("dashboard.ia.error");
+      default: return t("dashboard.ia.idle");
+    }
+  };
+
   const disabled = loading || status === "RUNNING" || status === "OK" || status === "QUEUED";
 
   // Cambia la etiqueta de retorno del IATrainButton por esta:
@@ -131,7 +142,7 @@ export default function IATrainButton({ expoId }) {
     className={`w-full sm:w-auto min-w-[110px] cursor-pointer md:min-w-[140px] flex flex-col items-center justify-center px-5 py-1.5 rounded-xl font-bold transition-all duration-200 shadow-md active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed ${getStatusStyles()}`}
   >
     <span className="text-[10px] md:text-[11px] uppercase tracking-tight opacity-80 leading-none mb-0.5">
-      Current Train
+      {t("dashboard.ia.currentTrain")}
     </span>
     
     <div className="flex items-center gap-2">
@@ -139,7 +150,7 @@ export default function IATrainButton({ expoId }) {
         <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
       )}
       <span className="text-xs sm:text-sm md:text-base whitespace-nowrap">
-        {status === "OK" ? "OK ✓" : status}
+        {getStatusText()}
       </span>
     </div>
   </button>

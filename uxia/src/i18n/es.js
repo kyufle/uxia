@@ -77,6 +77,13 @@ const translation = {
                 vehicleDetalls: "Detalles del vehículo...",
                 save: "Guardando..."
             }
+        },
+        ia:{
+            currentTrain: "Entrenamiento actual",
+            idle: "En espera",
+            running: "En ejecución",
+            queued: "En cola",
+            error: "Error"
         }
     }
 }

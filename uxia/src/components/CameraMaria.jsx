@@ -169,7 +169,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
         <div className="space-y-4">
           <div className="flex flex-col items-center justify-center space-y-3">
             {loading ? (
-              <p className={isDarkMode ? "text-white" : "text-black"}>Analitzant...</p>
+              <p className={isDarkMode ? "text-white" : "text-black"}>{t('landingPage.maria.analyzing')}</p>
             ) : isMobile ? (
               <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} shadow-sm w-full sm:w-auto`}>
                 <label className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5 ${isDarkMode ? "bg-slate-950 text-slate-50 hover:bg-blue-950/50" : "bg-white text-slate-800 hover:bg-blue-50/50"} rounded-full font-semibold tracking-wide transition-all duration-300 ease-out hover:shadow-md hover:-translate-y-0.5 active:scale-95`}>

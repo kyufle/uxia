@@ -10,7 +10,8 @@ const translation = {
             buttonMaria: "Abrir cámara",
             stop: "Detener",
             play: "Reproducir",
-            photo: "Hacer foto"
+            photo: "Hacer foto",
+            analyzing: "Analizando..."
         },
         history: {
             notappointment: "Aún no tienes ninguna consulta.",

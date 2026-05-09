@@ -10,7 +10,8 @@ const translation = {
             buttonMaria: "Obrir càmera",
             stop: "Aturar",
             play: "Reproduir",
-            photo: "Fer foto"
+            photo: "Fer foto",
+            analyzing: "Analitzant..."
         },
         history:{
             notappointment : "Encara no tens cap consulta.",

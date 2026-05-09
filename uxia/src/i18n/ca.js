@@ -7,7 +7,10 @@ const translation = {
             title: "Quin cotxe tens davant?",
             text: "La nostra intel·ligència artificial l'identificarà a l'instant amb només una foto.",
             button: "Obrir",
-            buttonMaria: "Obrir càmera"
+            buttonMaria: "Obrir càmera",
+            stop: "Aturar",
+            play: "Reproduir",
+            photo: "Fer foto"
         },
         history:{
             notappointment : "Encara no tens cap consulta.",

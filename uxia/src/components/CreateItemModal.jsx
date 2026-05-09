@@ -108,7 +108,7 @@ export default function CreateItemModal({ isOpen, onClose, expoSeleccionada, isD
                                 className={`w-full p-3 rounded-xl border focus:ring-2 focus:outline-none ${isDarkMode ? "bg-zinc-800 border-zinc-700 focus:ring-orange-300" : "bg-gray-50 border-gray-200 focus:ring-blue-500"}`}
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                placeholder="Ej: Seat León FR"
+                                placeholder="Seat León FR"
                             />
                         </div>
 

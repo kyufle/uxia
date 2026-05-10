@@ -440,7 +440,7 @@ def edit_expo_admin(request, expo_id):
 # En cada llamada siguiente el navegador envía esa cookie → el backend la usa para recuperar el token de la IA internamente
 
 
-IA_URL = "http://localhost:8765"
+IA_URL = "http://192.168.1.24:8765"
 
 
 def get_ia_token(request):

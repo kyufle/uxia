@@ -122,6 +122,16 @@ def devolver_json_coches(items):
 def foto_maria(request):
     if 'image' not in request.FILES:
         return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    idioma_recibido = request.data.get('lang', 'ca')
+    nombres_idiomas = {
+        'ca': 'català',
+        'es': 'castellano',
+        'en': 'english',
+        'fr': 'français'
+    }
+    idioma_final = nombres_idiomas.get(idioma_recibido[:2], 'català')
+
     image_file = request.FILES['image']
     temp_path = None
     try:
@@ -130,17 +140,24 @@ def foto_maria(request):
                 temp.write(chunk)
             temp_path = temp.name
         client = ollama.Client(host='http://192.168.1.24:11434')
+        prompt_dinamico = (
+            f"Identifica el cotxe d'aquesta imatge. Indica marca, model, color i any aproximat. "
+            f"Afegeix característiques tècniques rellevants del vehicle. "
+            f"No descriguis el fons ni l'entorn. Respon només en {idioma_final}, "
+            f"en menys de cinc línies i sense negretes ni formats."
+        )
         response = client.chat(
             model='qwen3-vl:30b',
             messages=[{
                 'role': 'user',
-                'content': 'Descriu aquesta imatge en menys de cinc lineas, en catalá y sense negrita ni formats especials tan sols text.',
+                'content': prompt_dinamico,
                 'images': [temp_path]
             }]
         )
         res_ia = response['message']['content']
         return Response({
             "descripcio": res_ia,
+            "idioma": idioma_recibido,
             "usuari": request.user.username if request.user.is_authenticated else "convidat"
         }, status=status.HTTP_201_CREATED)
     except Exception as e:
@@ -385,6 +402,7 @@ def get_my_expos(request):
             "id": expo.id,
             "name": expo.name,
             "state": expo.state,
+            "language": expo.language,
             "creationDate": expo.creationDate,
             "items_preview": items_preview,
         })
@@ -403,7 +421,8 @@ def edit_expo_admin(request, expo_id):
         expo.name = request.data.get('name')
     if 'state' in request.data:
         expo.state = request.data.get('state')
-
+    if 'language' in request.data:
+        expo.language = request.data.get('language')
     expo.save()
 
     return Response({
@@ -411,6 +430,7 @@ def edit_expo_admin(request, expo_id):
         "id": expo.id,
         "name": expo.name,
         "state": expo.state,
+        "language": expo.language,
     }, status=200)
 
 #como funciona el token de la IA en sesión:

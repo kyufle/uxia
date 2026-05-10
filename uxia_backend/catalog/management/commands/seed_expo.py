@@ -60,6 +60,7 @@ class Command(BaseCommand):
                         "creationDate": date.today(),
                         "state": "INIT",
                         "owner": user,
+                        "language": "ca",
                     },
                 )
 

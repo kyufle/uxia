@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'; // 1. Añadimos useRef
 import config from "../config"; 
+import { useTranslation } from 'react-i18next';
 
 export function HistorialChat({ isDarkMode }) {
   const [mensajes, setMensajes] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const {t} = useTranslation();
   // 2. Referencia para el final de la lista
   const messagesEndRef = useRef(null);
 
@@ -49,13 +50,13 @@ export function HistorialChat({ isDarkMode }) {
 
   if (loading) return (
     <div className={`p-10 text-center font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-      Carregant historial...
+      {t('landingPage.history.charge')}
     </div>
   );
   
   if (mensajes.length === 0) return (
     <div className={`p-10 md:p-20 text-center rounded-3xl ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
-        Encara no tens cap consulta.
+        {t('landingPage.history.notappointment')}
     </div>
   );
 

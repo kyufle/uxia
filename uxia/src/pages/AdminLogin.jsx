@@ -2,12 +2,14 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
 import { ThemeContext } from "../context/themeContext";
+import { useTranslation } from "react-i18next";
 
 export default function AdminLogin() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const {t} = useTranslation();
   const { isDarkMode } = useContext(ThemeContext);
 
 
@@ -57,7 +59,7 @@ export default function AdminLogin() {
               ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               : "bg-white border-gray-300 text-gray-900"
           }`}
-          placeholder="Usuari"
+          placeholder={t('dashboard.login.user')}
           value={user}
           onChange={(e) => setUser(e.target.value)}
         />
@@ -68,7 +70,7 @@ export default function AdminLogin() {
               : "bg-white border-gray-300 text-gray-900"
           }`}
           type="password"
-          placeholder="Contrasenya"
+          placeholder={t('dashboard.login.password')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -85,7 +87,7 @@ export default function AdminLogin() {
           }`}
           type="submit"
         >
-          Entrar
+          {t('dashboard.login.enter')}
         </button>
       </form>
     </div>

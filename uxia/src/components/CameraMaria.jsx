@@ -1,6 +1,10 @@
 import { CameraIcon, XMarkIcon, MagnifyingGlassIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon } from '@heroicons/react/24/outline';
 import React, { useState, useRef, useEffect } from 'react';
 import config from "../config";
+import VoiceButton from './VoiceButton';
+import { useTranslation } from 'react-i18next';
+
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
 export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   const [loading, setLoading] = useState(false);
@@ -12,6 +16,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   const [selectedExpoId, setSelectedExpoId] = useState(""); 
   
   const videoRef = useRef(null);
+  const { t } = useTranslation();
 
   const getUserIdFromCookie = () => {
     const name = "uxia_user_id=";
@@ -40,6 +45,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
   }, []);
 
   useEffect(() => { return () => stopCamera(); }, []);
+  useEffect(() => { if (videoRef.current && stream) videoRef.current.srcObject = stream; }, [stream]);
 
   const stopCamera = () => {
     if (stream) {
@@ -48,10 +54,31 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
     }
   };
 
+  const openCamera = async () => {
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      setStream(s);
+    } catch (err) { console.error("Error accessing camera:", err); }
+  };
+
+  const takePhoto = () => {
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    canvas.toBlob((blob) => {
+      const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+      handleFileUpload(file);
+      stopCamera();
+    }, 'image/jpeg');
+  };
+
   const handleFileUpload = async (eventOrFile) => {
     let file = eventOrFile.target ? eventOrFile.target.files[0] : eventOrFile;
     if (!file) return;
 
+    const selectedLanguage = localStorage.getItem('i18nextLng') || 'ca';
     setPreview(URL.createObjectURL(file));
     setLoading(true);
     setResultado(null);
@@ -60,6 +87,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
       const tokenIA = "x4_XnsFZ3U66MZ8OOjcP2f64i6QS_t5V8qutrQDlKKw";
       const formData = new FormData();
       formData.append('image', file);
+      formData.append('lang', selectedLanguage);
 
       let url = "";
       if (mode === 'id') {
@@ -124,7 +152,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
           >
             <CameraIcon className={`w-6 h-6 stroke-[1.5] ${isDarkMode ? "text-sky-400" : "text-blue-400"}`} />
             <span className="text-base">
-              Obrir <span className={`font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>marIA 2.0</span>
+              {t('landingPage.maria.button')} <span className={`font-bold ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>marIA 2.0</span>
             </span>
           </button>
         </div>
@@ -148,105 +176,126 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
           </button>
         </div>
 
-        {/* --- SELECTOR DE MODO --- */}
+        {/* MODO Y EXPOS */}
         {!resultado && !loading && (
-          <div className="flex justify-center space-x-2 mb-4 p-1 bg-slate-100/50 rounded-2xl">
-            <button 
-              onClick={() => setMode('description')}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-xl text-xs font-bold transition-all ${
-                mode === 'description' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'
-              }`}
-            >
-              <ChatBubbleBottomCenterTextIcon className="w-4 h-4" />
-              <span>DESCRIPCIÓ</span>
-            </button>
-            <button 
-              onClick={() => setMode('id')}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-xl text-xs font-bold transition-all ${
-                mode === 'id' ? 'bg-white shadow-sm text-orange-600' : 'text-slate-400'
-              }`}
-            >
-              <MagnifyingGlassIcon className="w-4 h-4" />
-              <span>IDENTIFICACIÓ</span>
-            </button>
+          <>
+            <div className="flex justify-center space-x-2 mb-4 p-1 bg-slate-100/50 rounded-2xl">
+              <button 
+                onClick={() => setMode('description')}
+                className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-xl text-xs font-bold transition-all ${
+                  mode === 'description' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'
+                }`}
+              >
+                <ChatBubbleBottomCenterTextIcon className="w-4 h-4" />
+                <span>{t('landingPage.maria.modeDescription') || 'DESCRIPCIÓ'}</span>
+              </button>
+              <button 
+                onClick={() => setMode('id')}
+                className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-xl text-xs font-bold transition-all ${
+                  mode === 'id' ? 'bg-white shadow-sm text-orange-600' : 'text-slate-400'
+                }`}
+              >
+                <MagnifyingGlassIcon className="w-4 h-4" />
+                <span>{t('landingPage.maria.modeId') || 'IDENTIFICACIÓ'}</span>
+              </button>
+            </div>
+
+            {mode === 'id' && (
+              <div className="mb-6 animate-in fade-in duration-300">
+                <select
+                  value={selectedExpoId} 
+                  onChange={(e) => setSelectedExpoId(e.target.value)}
+                  className={`w-full px-4 py-2.5 rounded-xl text-xs font-bold border outline-none transition-all ${
+                    isDarkMode ? "bg-slate-900 border-slate-800 text-slate-200" : "bg-white border-slate-200 text-slate-700 shadow-sm"
+                  }`}
+                >
+                  <option value="" disabled>Selecciona una Expo...</option>
+                  {exposiciones.map((expo) => (
+                    <option key={expo.id} value={expo.cleanId}>
+                      {expo.expo || expo.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* INTERFAZ DE CAPTURA */}
+        {!resultado && (
+          <div className="flex flex-col items-center justify-center space-y-4">
+            {loading ? (
+              <div className="flex flex-col items-center space-y-3 p-8">
+                <div className="w-8 h-8 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
+                <p className={isDarkMode ? "text-white" : "text-black"}>{t('landingPage.maria.analyzing')}</p>
+              </div>
+            ) : isMobile ? (
+              <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} shadow-sm w-full sm:w-auto`}>
+                <label className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5 ${isDarkMode ? "bg-slate-950 text-slate-50" : "bg-white text-slate-800"} rounded-full font-semibold tracking-wide transition-all duration-300 active:scale-95`}>
+                  <CameraIcon className="w-6 h-6" />
+                  <span className="text-base">{t('landingPage.maria.photo')}</span>
+                  <input type="file" accept="image/*" capture="environment" onChange={handleFileUpload} className="hidden" />
+                </label>
+              </div>
+            ) : (
+              !stream ? (
+                <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} shadow-sm w-full sm:w-auto`}>
+                  <button onClick={openCamera} className={`flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-3.5 ${isDarkMode ? "bg-slate-950 text-slate-50" : "bg-white text-slate-800"} rounded-full font-semibold transition-all active:scale-95`}>
+                    <CameraIcon className="w-6 h-6" />
+                    <span className="text-base">{t('landingPage.maria.buttonMaria')}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center space-y-3">
+                  <video ref={videoRef} autoPlay playsInline className="rounded-xl w-full max-w-xs shadow-lg border-2 border-blue-500" />
+                  <button onClick={takePhoto} className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold transition-all shadow-md active:scale-95">
+                    {t('landingPage.maria.photo')}
+                  </button>
+                </div>
+              )
+            )}
           </div>
         )}
 
-        {/* --- DESPLEGABLE EXPOS --- */}
-        {mode === 'id' && !resultado && !loading && (
-          <div className="mb-6">
-            <select
-              value={selectedExpoId} 
-              onChange={(e) => setSelectedExpoId(e.target.value)}
-              className={`w-full px-4 py-2.5 rounded-xl text-xs font-bold border outline-none transition-all ${
-                isDarkMode ? "bg-slate-900 border-slate-800 text-slate-200" : "bg-white border-slate-200 text-slate-700 shadow-sm"
-              }`}
-            >
-              <option value="" disabled>Selecciona una Expo...</option>
-              {exposiciones.map((expo) => (
-                <option key={expo.id} value={expo.cleanId}>
-                  {expo.expo || expo.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* --- VISUALIZACIÓN DE RESULTADOS --- */}
+        {/* RESULTADOS */}
         {resultado && (
-          <div className={`mb-6 p-6 rounded-3xl animate-in zoom-in-95 duration-300 ${isDarkMode ? "bg-slate-900/50 border border-slate-800" : "bg-blue-50/50 border border-blue-100"}`}>
+          <div className={`mt-4 p-6 rounded-3xl animate-in zoom-in-95 duration-300 shadow-xl border ${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-blue-50 text-black"}`}>
             <div className="flex items-center space-x-3 mb-4">
               <CheckBadgeIcon className="w-6 h-6 text-green-500" />
-              <h3 className={`font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>Resultat de la IA</h3>
+              <h3 className="font-bold uppercase tracking-tight">Resultat marIA</h3>
             </div>
-            
+
             {preview && (
-              <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-2xl mb-4 shadow-lg" />
+              <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-2xl mb-4 shadow-inner" />
             )}
 
             {resultado.error_msg ? (
               <p className="text-red-500 font-medium text-sm">{resultado.error_msg}</p>
             ) : (
-              <div className="space-y-2">
-                <p className={`text-lg font-bold capitalize ${isDarkMode ? "text-sky-400" : "text-blue-600"}`}>
-                  {resultado.prediction?.replace('_', ' ') || resultado.name}
-                </p>
-                <p className={`text-sm leading-relaxed ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                  {resultado.description || "S'ha identificat correctament l'element a la imatge."}
-                </p>
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <p className={`text-lg font-bold capitalize ${isDarkMode ? "text-sky-400" : "text-blue-600"}`}>
+                    {resultado.prediction?.replace(/_/g, ' ') || resultado.name || 'Element detectat'}
+                  </p>
+                  <p className="text-sm leading-relaxed opacity-80 italic">
+                    "{resultado.descripcio || resultado.description || t('landingPage.maria.noDescription')}"
+                  </p>
+                </div>
+
+                <VoiceButton 
+                  text={resultado.descripcio || resultado.description}
+                  language={resultado.idioma || localStorage.getItem('i18nextLng') || 'ca'}
+                  isDarkMode={isDarkMode} 
+                />
+
+                <button 
+                  onClick={() => { setResultado(null); setPreview(null); }}
+                  className="w-full py-2 mt-4 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-blue-500 transition-colors border-t border-slate-100/10 pt-4"
+                >
+                  {t('landingPage.maria.retry') || 'Fer una altra foto'}
+                </button>
               </div>
             )}
-
-            <button 
-              onClick={() => { setResultado(null); setPreview(null); }}
-              className="mt-6 w-full py-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors"
-            >
-              Fer una altra foto
-            </button>
-          </div>
-        )}
-
-        {/* --- BOTÓN DE DISPARO (Oculto si hay resultado) --- */}
-        {!resultado && (
-          <div className="flex justify-center">
-            <div className={`p-[1px] rounded-full bg-gradient-to-r ${isDarkMode ? "from-blue-900/50 via-slate-800 to-orange-100/50" : "from-blue-100/50 via-slate-200 to-orange-100/50"} w-full sm:w-auto shadow-xl`}>
-              <label className={`cursor-pointer flex items-center justify-center space-x-3 w-full sm:min-w-70 px-8 py-4 ${
-                isDarkMode ? "bg-slate-950 text-slate-50" : "bg-white text-slate-800"
-              } rounded-full font-bold transition-transform active:scale-95`}>
-                {loading ? (
-                  <div className="flex items-center space-x-3">
-                    <div className="w-5 h-5 border-2 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
-                    <span>Analitzant...</span>
-                  </div>
-                ) : (
-                  <>
-                    <CameraIcon className={`w-6 h-6 ${isDarkMode ? "text-sky-400" : "text-blue-400"}`} />
-                    <span>FER FOTO</span>
-                  </>
-                )}
-                <input type="file" accept="image/*" capture="environment" onChange={handleFileUpload} className="hidden" disabled={loading} />
-              </label>
-            </div>
           </div>
         )}
       </div>

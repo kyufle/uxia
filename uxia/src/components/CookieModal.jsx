@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const CookieModal = ({ isDarkMode, setHasConsent }) => {
   const [isVisible, setIsVisible] = useState(false);
-
+  const {t} = useTranslation();
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
     if (!consent) {
@@ -45,9 +46,9 @@ const acceptCookies = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <h3 className="text-2xl font-bold tracking-tight">La teva privacitat ens importa</h3>
+            <h3 className="text-2xl font-bold tracking-tight">{t('landingPage.cookies.title')}</h3>
             <p className={`text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Utilitzem cookies per a millorar la teva experiència.
+              {t('landingPage.cookies.text')}
               {/* <a href="/politica-cookies" className="underline ml-1 hover:text-blue-500 font-medium">Política de Cookies</a>. */}
             </p>
           </div>
@@ -56,7 +57,7 @@ const acceptCookies = () => {
             onClick={acceptCookies}
             className="w-full mt-2 px-10 py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white transition-colors shadow-lg shadow-blue-900/20 active:scale-[0.98]"
           >
-            Aceptar totes
+            {t('landingPage.cookies.button')}
           </button>
         </div>
 

@@ -6,6 +6,7 @@ import CookieBanner from "../components/CookieModal";
 import { ThemeContext } from "../context/themeContext";
 import CreateItemModal from "../components/CreateItemModal";
 import IATrainButton from "../components/IATrainButton";
+import { useTranslation } from "react-i18next";
 
 export default function AdminItems() {
   const username = getUsername();
@@ -19,6 +20,8 @@ export default function AdminItems() {
   const [hasConsent, setHasConsent] = useState(() => {
     return localStorage.getItem("cookie-consent") === "true";
   });
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!isAdmin()) {
@@ -79,7 +82,7 @@ export default function AdminItems() {
             <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
             </svg>
-            <span className="whitespace-nowrap">Nou Item</span>
+            <span className="whitespace-nowrap">{t('dashboard.expo.newItem')}</span>
           </button>
 
           <button
@@ -90,7 +93,7 @@ export default function AdminItems() {
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            <span className="whitespace-nowrap">← Tornar</span>
+            <span className="whitespace-nowrap">← {t('dashboard.expo.back')}</span>
           </button>
         </div>
         </div>

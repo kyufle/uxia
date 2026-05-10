@@ -4,12 +4,7 @@ import { isAdmin, logout } from "../utils/auth";
 import config from "../config";
 import EditExpoModal from "../components/EditExpoModal";
 import { ThemeContext } from "../context/themeContext";
-
-const STATE_LABELS = {
-  INIT: "Inicial",
-  DISPONIBLE: "Disponible",
-  ACTUALIZABLE: "Actualitzable",
-};
+import { useTranslation } from "react-i18next";
 
 const STATE_STYLES = {
   INIT: "bg-blue-50 text-blue-800",
@@ -18,6 +13,12 @@ const STATE_STYLES = {
 };
 
 export default function AdminExpoList() {
+  const {t} = useTranslation();
+  const STATE_LABELS = {
+  INIT: t('dashboard.landingPage.init'),
+  DISPONIBLE: t('dashboard.landingPage.available'),
+  ACTUALIZABLE: t('dashboard.landingPage.updatable'),
+};
   const navigate = useNavigate();
   const [expos, setExpos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,12 +53,12 @@ export default function AdminExpoList() {
           onClick={() => navigate("/dashboard")}
           className={`text-sm cursor-pointer flex items-center gap-1 transition ${isDarkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-800"}`}
         >
-          ← Tornar
+          ← {t('dashboard.landingPage.back')}
         </button>
-        <h1 className="text-xl font-bold">Les meves expos</h1>
+        <h1 className="text-xl font-bold">{t('dashboard.landingPage.title')}</h1>
       </div>
 
-      {loading && <p className="text-gray-400 text-center py-10">Carregant...</p>}
+      {loading && <p className="text-gray-400 text-center py-10">{t('dashboard.landingPage.loading')}</p>}
       {error && <p className="text-red-500 text-center py-10">{error}</p>}
 
       <div className="flex flex-col gap-4">
@@ -80,6 +81,13 @@ export default function AdminExpoList() {
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATE_STYLES[expo.state]}`}>
                     {STATE_LABELS[expo.state]}
                   </span>
+                  {expo.language && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase border ${
+                      isDarkMode ? "border-gray-600 text-gray-400" : "border-gray-200 text-gray-500"
+                    }`}>
+                      {expo.language}
+                    </span>
+                  )}
                 </div>
                 <p className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>{expo.creationDate}</p>
               </div>
@@ -113,7 +121,7 @@ export default function AdminExpoList() {
                         : "text-[#162354] hover:bg-blue-50"
                     }`}
                   >
-                    <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">Veure</span>
+                    <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">{t('dashboard.landingPage.see')}</span>
                     <span>→</span>
                   </button>
                 </div>

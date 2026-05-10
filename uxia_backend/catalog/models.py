@@ -4,6 +4,13 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 class Expo(models.Model):
+    LANG_CHOICES = [
+        ("ca", "Català"),
+        ("es", "Castellà"),
+        ("en", "Anglès"),
+        ("fr", "Francès"),
+    ]
+
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -11,6 +18,14 @@ class Expo(models.Model):
     )
 
     name = models.CharField(max_length=100)
+    
+    language = models.CharField(
+        max_length=2,
+        choices=LANG_CHOICES,
+        default="ca",
+        help_text="Idioma per a la lectura en veu alta (TTS) dels ítems"
+    )
+
     state = models.CharField(
         max_length=15,
         choices=[
@@ -23,7 +38,7 @@ class Expo(models.Model):
     creationDate = models.DateField()
 
     def __str__(self):
-        return f"{self.name} ({self.state} - {self.creationDate})"
+        return f"{self.name} ({self.state} - {self.language})"
 
 
 class Tag(models.Model):

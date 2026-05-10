@@ -11,7 +11,15 @@ const translation = {
             stop: "Stop",
             play: "Play",
             photo: "Take photo",
-            analyzing: "Analyzing..."
+            analyzing: "Analyzing...",
+            modeDescription: "Describe the image",
+            modeId: "Identify the car",
+            retry: "Take another photo",
+            dontSelectExpoError: "Please select an Expo first.",
+            resultTitle : "marIA Result",
+            selectExpo: "Select an exhibition...",
+            errorProcess: "Processing error.",
+            elementDetected: "Element detected"
         },
         history: {
             notappointment: "You don't have any inquiries yet.",
@@ -47,7 +55,8 @@ const translation = {
             edit: {
                 editExpo: "Edit exhibition",
                 nameExpo: "Exhibition name",
-                estat: "Status"
+                estat: "Status",
+                language: "Language",
             }
         },
         expo: {

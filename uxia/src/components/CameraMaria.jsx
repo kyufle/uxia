@@ -90,24 +90,27 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
       formData.append('lang', selectedLanguage);
 
       let url = "";
+      let isClassify;
       if (mode === 'id') {
         if (!selectedExpoId) {
-          setResultado({ error_msg: "Si us plau, selecciona una Expo prèviament." });
+          setResultado({ error_msg: t('landingPage.maria.dontSelectExpoError') });
           setLoading(false);
           return;
         }
         url = `${config.API_URL}/api/classify_item_api/`;
+        isClassify = true;
         const selectedExpo = exposiciones.find(e => e.cleanId === selectedExpoId);
         const expoNameToSend = selectedExpo?.expo || selectedExpo?.name || "SEAT-EXPO";
         formData.append('expo_name', expoNameToSend);
       } else {
         url = `${config.API_URL}/api/foto/`;
+        isClassify = false;
       }
 
       const response = await fetch(url, { 
         method: 'POST', 
         headers: {
-          'Authorization': `Bearer ${tokenIA}`, 
+          'Authorization': isClassify ? `Bearer ${tokenIA}` : undefined,
           'Accept': 'application/json'
         },
         body: formData
@@ -116,22 +119,26 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.details?.detail || data.error || "Error en el processament.");
+        throw new Error(data.details?.detail || data.error || t('landingPage.maria.errorProcess'));
       }
 
       setResultado(data);
 
       if (mode === 'description' && data.descripcio) {
         const sessionToken = localStorage.getItem("token");
-        const historialData = { cookie: getUserIdFromCookie(), answers: data.descripcio };
-        fetch(`${config.API_URL}/api/save_historial/`, { 
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionToken}`
-          },
-          body: JSON.stringify(historialData)
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = async () => {
+          const base64data = reader.result;
+          const historialData = { cookie: getUserIdFromCookie(), answers: data.descripcio, car_photo: base64data };
+          fetch(`${config.API_URL}/api/save_historial/`, { 
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(historialData)
         }).catch(err => console.error("Error saving history:", err));
+        }
       }
 
     } catch (error) {
@@ -187,7 +194,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
                 }`}
               >
                 <ChatBubbleBottomCenterTextIcon className="w-4 h-4" />
-                <span>{t('landingPage.maria.modeDescription') || 'DESCRIPCIÓ'}</span>
+                <span>{t('landingPage.maria.modeDescription')}</span>
               </button>
               <button 
                 onClick={() => setMode('id')}
@@ -196,7 +203,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
                 }`}
               >
                 <MagnifyingGlassIcon className="w-4 h-4" />
-                <span>{t('landingPage.maria.modeId') || 'IDENTIFICACIÓ'}</span>
+                <span>{t('landingPage.maria.modeId')}</span>
               </button>
             </div>
 
@@ -209,7 +216,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
                     isDarkMode ? "bg-slate-900 border-slate-800 text-slate-200" : "bg-white border-slate-200 text-slate-700 shadow-sm"
                   }`}
                 >
-                  <option value="" disabled>Selecciona una Expo...</option>
+                  <option value="" disabled>{t('landingPage.maria.selectExpo')}</option>
                   {exposiciones.map((expo) => (
                     <option key={expo.id} value={expo.cleanId}>
                       {expo.expo || expo.name}
@@ -262,7 +269,7 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
           <div className={`mt-4 p-6 rounded-3xl animate-in zoom-in-95 duration-300 shadow-xl border ${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-blue-50 text-black"}`}>
             <div className="flex items-center space-x-3 mb-4">
               <CheckBadgeIcon className="w-6 h-6 text-green-500" />
-              <h3 className="font-bold uppercase tracking-tight">Resultat marIA</h3>
+              <h3 className="font-bold uppercase tracking-tight">{t('landingPage.maria.resultTitle')}</h3>
             </div>
 
             {preview && (
@@ -275,13 +282,14 @@ export function CameraMaria({ showCamera, setShowCamera, isDarkMode }) {
               <div className="space-y-4">
                 <div className="space-y-1">
                   <p className={`text-lg font-bold capitalize ${isDarkMode ? "text-sky-400" : "text-blue-600"}`}>
-                    {resultado.prediction?.replace(/_/g, ' ') || resultado.name || 'Element detectat'}
+                    {resultado.prediction?.replace(/_/g, ' ') || resultado.name || t('landingPage.maria.elementDetected')}
                   </p>
                   <p className="text-sm leading-relaxed opacity-80 italic">
                     "{resultado.descripcio || resultado.description || t('landingPage.maria.noDescription')}"
                   </p>
                 </div>
 
+                {/* BOTÓN DE VOZ INTEGRADO */}
                 <VoiceButton 
                   text={resultado.descripcio || resultado.description}
                   language={resultado.idioma || localStorage.getItem('i18nextLng') || 'ca'}

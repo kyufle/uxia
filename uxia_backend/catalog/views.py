@@ -755,7 +755,7 @@ def classify_item_api(request):
         except Item.DoesNotExist:
             response_data = {
                 "name": prediction,
-                "description": "No description available for this item in this expo"
+                "description": "N/A"
             }
 
         return Response(response_data, status=200)

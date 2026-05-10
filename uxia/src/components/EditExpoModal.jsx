@@ -14,7 +14,7 @@ const LANGUAGE_OPTIONS = [
         { value: 'ca', label: 'Català' },
         { value: 'es', label: 'Castellano' },
         { value: 'en', label: 'English' },
-        { value: 'fr', label: 'Francès' },
+        { value: 'fr', label: 'Français' },
     ];
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -88,7 +88,7 @@ const LANGUAGE_OPTIONS = [
                         </select>
                     </div>
                     <div>
-                        <label className="block text-xs font-bold uppercase mb-1 opacity-60">Idioma de la Veu (TTS)</label>
+                        <label className="block text-xs font-bold uppercase mb-1 opacity-60">{t('dashboard.landingPage.edit.language')}</label>
                         <select
                             className={`w-full p-3 rounded-xl cursor-pointer border focus:ring-2 focus:outline-none ${isDarkMode ? "bg-zinc-800 border-zinc-700 focus:ring-orange-300" : "bg-gray-50 border-gray-200 focus:ring-blue-500"}`}
                             value={formData.language}

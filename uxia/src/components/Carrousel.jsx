@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import izquierda from '../assets/chevron-izquierdo.png'
 import derecha from '../assets/chevron-derecho.png'
 import config from '../config'
+import { useTranslation } from 'react-i18next';
 
 function Carrousel({ seleccionado, isDarkMode }) {
     const [indexPhoto, setIndexPhoto] = useState(0);
@@ -10,7 +11,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
     const [tempImage, setTempImage] = useState(null);
     const touchStartY = useRef(null);
     const scrollRef = useRef(null);
-
+    const {t} = useTranslation();
     useEffect(() => {
         async function chargeData() {
             if (!seleccionado) {
@@ -65,7 +66,7 @@ function Carrousel({ seleccionado, isDarkMode }) {
         if (diff > 50) { closeMenu(); touchStartY.current = null; }
     };
 
-    if (totalCars === 0) return <div className={`p-10 text-center ${isDarkMode ? "text-gray-100" : "text-gray-400"} italic`}>Busca una expo o un cotxe...</div>;
+    if (totalCars === 0) return <div className={`p-10 text-center ${isDarkMode ? "text-gray-100" : "text-gray-400"} italic`}>{t('landingPage.typing')}</div>;
 
     return (
         <div className='w-full h-full flex flex-row justify-center items-center relative overflow-hidden'>

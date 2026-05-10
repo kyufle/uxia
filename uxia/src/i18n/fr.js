@@ -11,7 +11,15 @@ const translation = {
             stop: "Arrêter",
             play: "Lire",
             photo: "Prendre une photo",
-            analyzing: "Analyser..."
+            analyzing: "Analyse en cours...",
+            modeDescription: "Décrire l'image",
+            modeId: "Identifie la voiture",
+            retry: "Prendre une autre photo",
+            dontSelectExpoError: "Veuillez sélectionner une Expo au préalable.",
+            resultTitle : "Résultat marIA",
+            selectExpo: "Sélectionnez une exposition...",
+            errorProcess: "Erreur de traitement.",
+            elementDetected: "Élément détecté"
         },
         history: {
             notappointment: "Vous n'avez pas encore de consultation.",
@@ -47,7 +55,8 @@ const translation = {
             edit: {
                 editExpo: "Modifier l'exposition",
                 nameExpo: "Nom de l'exposition",
-                estat: "État"
+                estat: "État",
+                language: "Langue",
             }
         },
         expo: {
@@ -75,7 +84,8 @@ const translation = {
                 createItem: "Créer l'article",
                 send: "Envoi en cours...",
                 vehicleDetalls: "Détails du véhicule...",
-                save: "Enregistrement..."
+                save: "Enregistrement...",
+                
             }
         },
         ia:{

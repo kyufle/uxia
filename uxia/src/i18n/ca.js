@@ -11,7 +11,15 @@ const translation = {
             stop: "Aturar",
             play: "Reproduir",
             photo: "Fer foto",
-            analyzing: "Analitzant..."
+            analyzing: "Analitzant...",
+            modeDescription: "Descriu l'imatge",
+            modeId: "Identifica'm el cotxe",
+            retry: "Fer una altre foto",
+            dontSelectExpoError: "Si us plau, selecciona una Expo prèviament.",
+            resultTitle : "Resultat marIA",
+            selectExpo: "Selecciona una exposició...",
+            errorProcess: "Error en el processament.",
+            elementDetected: "Element detectat"
         },
         history:{
             notappointment : "Encara no tens cap consulta.",
@@ -47,7 +55,8 @@ const translation = {
             edit:{
                 editExpo: "Editar exposició",
                 nameExpo: "Nom de l'exposició",
-                estat: "Estat"
+                estat: "Estat",
+                language: "Idioma",
             }
         },
         expo:{

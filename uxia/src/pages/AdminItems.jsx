@@ -53,7 +53,7 @@ export default function AdminItems() {
                 isDarkMode ? "text-white" : "text-[#162354]"
               }`}
             >
-              Benvingut,
+              {t('dashboard.landingPage.welcome')},
             </h1>
             <p
               className={`text-sm font-medium ${

@@ -11,7 +11,7 @@ from django.db.models import Q
 from .models import Historial
 from django.core.files.base import ContentFile
 import base64
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import ItemCardSerializer
 import requests 
@@ -37,7 +37,7 @@ def get_expos(request):
         for e in exposiciones:
             expos_data.append({
                 "id": f"expo-{e.id}",
-                "name": "",        # Vacío para que el carrusel los ignore
+                "name": "",
                 "description": "", 
                 "expo": e.name,
                 "image": None,
@@ -636,4 +636,117 @@ def get_expo_state(request, expo_id):
         return Response({"state": expo.state})
     except Expo.DoesNotExist:
         return Response({"error": "Expo no trobada"}, status=404)
-        
+
+@api_view(['POST'])
+@authentication_classes([])   # 🔥 clave: desactiva auth SOLO aquí
+@permission_classes([AllowAny])
+def classify_item_api(request):
+
+    print(request.data)
+    print(request.FILES)
+    print(request.headers)
+
+    IA_ENDPOINT = f"{IA_URL}/classify"
+
+    image_file = request.FILES.get('image')
+    expo_name = request.data.get('expo_name')
+
+    if not image_file:
+        return Response({"error": "No se envió imagen"}, status=400)
+
+    if not expo_name:
+        return Response({"error": "expo_name es obligatorio"}, status=400)
+
+    # Buscar expo
+    try:
+        expo = Expo.objects.get(name=expo_name)
+    except Expo.DoesNotExist:
+        return Response({"error": "Expo no encontrada"}, status=404)
+
+    try:
+        print(f"[DEBUG] Expo: {expo.name}")
+        print(f"[DEBUG] IA Endpoint: {IA_ENDPOINT}")
+
+        # Leer imagen correctamente
+        image_content = image_file.read()
+
+        files = {
+            'image': (
+                image_file.name,
+                image_content,
+                image_file.content_type
+            )
+        }
+
+        # 🔥 SOLO reenviar token si existe (sin tocarlo)
+        auth_header = request.headers.get("Authorization")
+
+        headers = {
+            "accept": "application/json"
+        }
+
+        if auth_header:
+            headers["Authorization"] = auth_header
+
+        # Llamada a IA
+        ia_res = requests.post(
+            IA_ENDPOINT,
+            headers=headers,
+            files=files,
+            timeout=20
+        )
+
+        print(f"[DEBUG] IA status: {ia_res.status_code}")
+
+        # Error HTTP IA
+        if ia_res.status_code != 200:
+            return Response({
+                "error": "IA devolvió error",
+                "status_code_ia": ia_res.status_code,
+                "respuesta_ia_cruda": ia_res.text
+            }, status=502)
+
+        # Parse seguro JSON
+        try:
+            print(f"[DEBUG] Respuesta IA: {ia_res.text}")
+            ia_data = ia_res.json()
+        except Exception:
+            return Response({
+                "error": "IA no devolvió JSON válido",
+                "raw": ia_res.text
+            }, status=502)
+
+        prediction = ia_data.get("prediction")
+
+        if prediction:
+            prediction = prediction.replace("_", " ").strip()
+
+        try:
+            item = Item.objects.get(
+                name__iexact=prediction,
+                expo=expo
+            )
+
+            response_data = {
+                "name": item.name,
+                "description": item.description
+            }
+
+        except Item.DoesNotExist:
+            response_data = {
+                "name": prediction,
+                "description": "No description available for this item in this expo"
+            }
+
+        return Response(response_data, status=200)
+
+    except requests.exceptions.ConnectionError:
+        return Response({
+            "error": f"No se pudo conectar con la IA en {IA_URL}"
+        }, status=504)
+
+    except Exception as e:
+        return Response({
+            "error": "Error interno",
+            "detalle": str(e)
+        }, status=500)
